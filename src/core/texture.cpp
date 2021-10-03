@@ -3,6 +3,9 @@
 #include <cstring>
 #include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <external/stb_image.h>
+
 namespace SyncX {
     Texture::Texture(const char* filename, bool inverse) {
         int c_len = std::strlen(filename), idx = c_len;

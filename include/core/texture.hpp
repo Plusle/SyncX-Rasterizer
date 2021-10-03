@@ -2,9 +2,6 @@
 
 #include <math/vector.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <external/stb_image.h>
-
 namespace SyncX {
 
     enum class SampleApproximation { Linear, Nearest };
