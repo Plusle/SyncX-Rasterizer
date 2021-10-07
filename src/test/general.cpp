@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <vector>
 
 struct vec {
     float x, y;
@@ -20,31 +21,21 @@ struct mat {
     float c[4];
 };
 
-void fun(int (&i)[3]) {
 
-}
-
-// void fun(int* i) {
-    
-// }
 
 int main(int argc, char** argv) {
-    // vec v1{1, 2};
-    // vec v2{4, 5};
-    // mat m(v1, v2);
-    // std::cout << m.c[0] << " " << m.c[1] << "\n" << m.c[2] << " " << m.c[3]; 
 
-#define TEST2
-#if defined(TEST1)
-    std::cout << "test1";
-#elif defined(TEST2)
-    std::cout << "test2";
-#else
-    std::cout << "default";
-#endif
 
-    int i[3] = { 1, 2, 3 };
-    fun(i);
+    std::vector<float> v;
+    for (int i = 0; i <= 255; ++i) {
+        v.push_back(float(i) / 255);
+    }
+    
+    std::cout << std::endl;
+
+    for (const auto& i : v) {
+        std::cout << i * 255 << ' ';
+    }
 
     return 0;
 }

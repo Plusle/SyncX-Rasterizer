@@ -13,3 +13,11 @@ add_executable(ImagePrinter
 target_link_libraries(ImagePrinter 
     Core
 )
+
+add_executable(TextureInterpolationTest
+    TextureInterpolationTest.cpp
+)
+
+target_link_libraries(TextureInterpolationTest
+    Core
+)
