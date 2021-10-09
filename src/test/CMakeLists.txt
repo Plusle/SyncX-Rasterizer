@@ -11,13 +11,26 @@ add_executable(ImagePrinter
 )
 
 target_link_libraries(ImagePrinter 
-    Core
+    IODevice
 )
 
-add_executable(TextureInterpolationTest
-    TextureInterpolationTest.cpp
+add_executable(TexturePrototypeTest
+    TexturePrototypeTest.cpp
 )
 
-target_link_libraries(TextureInterpolationTest
-    Core
+target_link_libraries(TexturePrototypeTest
+    IODevice
+    Texture
+)
+
+add_executable(MipmapPrototype
+    MipmapPrototype.cpp
+)
+
+add_executable(MipmapLayersDisplay
+    MipmapLayersDisplay.cpp
+)
+
+target_link_libraries(MipmapLayersDisplay
+    Texture
 )

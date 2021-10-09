@@ -1,4 +1,5 @@
 build/
 .vscode/
-*.ppm
-texture.png
+/*.ppm
+/*.png
+/*.jpg
