@@ -11,7 +11,9 @@
 int main(int argc, char** argv) {
     int32_t x, y, ch, req;
     std::string filename = argc > 1 ? argv[1] : "texture.png";
-    const char* ext = filename.substr(filename.length() - 3, 3).c_str();
+    std::string extension = filename.substr(filename.length() - 3, 3);
+    const char* ext = extension.c_str();
+
     std::cout << ext << std::endl;
     req = !strcmp(ext, "png") ? 4 : 3;
     uint8_t* origin = stbi_load(filename.c_str(), &x, &y, &ch, req);

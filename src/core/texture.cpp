@@ -32,11 +32,11 @@ namespace SyncX {
         // std::strcpy(ext, &filename[idx]);
 
         std::string name(filename);
-        const char* ext = name.substr(name.length() - 3, 3).c_str();
+        std::string extension = name.substr(name.length() - 3, 3);
         
         constexpr int required_components = 4;
-        if (!strcmp(ext, "jpg")) m_Channels = 3;
-        else if (!strcmp(ext, "png")) m_Channels = 4;
+        if (!strcmp(extension.c_str(), "jpg")) m_Channels = 3;
+        else if (!strcmp(extension.c_str(), "png")) m_Channels = 4;
         else m_Channels = 1;
         m_Data = stbi_load(filename, &m_Width, &m_Height, &m_Channels, required_components);
         if (m_Data == nullptr) {
