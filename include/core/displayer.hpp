@@ -10,10 +10,6 @@ struct IODevice {
     virtual void Display(Renderer* r) const = 0; 
 };
 
-struct DebugImagePrinter : IODevice {
-    virtual void Display(Renderer* r) const override;
-};
-
 struct ImagePrinter : IODevice {
     ImagePrinter(const char* filename) : m_Filename(filename) {}
     virtual void Display(Renderer* r) const override;

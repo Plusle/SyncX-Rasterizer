@@ -21,6 +21,9 @@ namespace SyncX {
 #ifdef MIPMAP_DEBUG_INFO
         std::vector<uint32_t> layer_compacity;
 #endif
+        uint8_t* m_Data;
+        int32_t m_MipmapMaxLevel;
+        std::vector<uint32_t> m_MipmapOffset;
 
     private:
         void GenerateMipmap();
@@ -28,9 +31,7 @@ namespace SyncX {
         Vector3f GetColorLinear(float u, float v) const;
         Vector3f GetColorNearest(float u, float v) const;
 
-        uint8_t* m_Data;
-        int32_t m_MipmapMaxLevel;
-        std::vector<uint32_t> m_MipmapOffset;
+
 
     };
 

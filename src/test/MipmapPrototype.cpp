@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     uint32_t layers = static_cast<uint32_t>(std::min(log2(x), log2(y)));
     std::cout << x << ' ' << y << ' ' << ch << ' ' << req << '\n';
 
-    std::ofstream ori("origin.ppm", std::ios::out);
+    std::ofstream ori("MipmapPrototypeOrigin.ppm", std::ios::out);
     ori << "P3\n" << x << ' ' << y << "\n255\n";
     for (int i = 0; i < y; ++i) {
         std::cout << "\rScanline No." << i << ' ' << std::flush;
@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
     int width = x / 2, height = y / 2;
     // std::cout << width << ' ' << height << std::endl;
 
-    std::ofstream ppm("mipmap.ppm", std::ios::out);
+    std::ofstream ppm("MipmapPrototype.ppm", std::ios::out);
     ppm << "P3\n" << width << ' ' << height << "\n255\n";
     for (int i = 0; i < width; ++i) {
         std::cout << "\rScanline No." << i << ' ' << std::flush;

@@ -43,11 +43,11 @@ namespace SyncX {
             std::cerr << "Unable to load texture \"" << filename << "\" by stb_image, exit" << std::endl;
             std::exit(1);
         }
-
+#ifdef MIPMAP_DEBUG_INFO
         layer_compacity = std::vector<uint32_t>();
+#endif
 
-
-#if 0
+#if 1
         if (mipmap) GenerateMipmap();
 #endif
     }
@@ -106,10 +106,16 @@ namespace SyncX {
         for (uint32_t level = 1, src_width = m_Width, src_height = m_Height;
              level <= m_MipmapMaxLevel; 
              ++level, src_height >>= 1, src_width >>= 1) {
+#ifdef MIPMAP_DEBUG_INFO
+            std::cerr << "Begin to generating mipmap level " << level << ".\n" << std::flush;
+#endif
             uint8_t* current_src = &mipmap_data[m_MipmapOffset[level - 1]];
             uint8_t* current_dst = &mipmap_data[m_MipmapOffset[level]];
-            for (uint32_t i = 0; i < src_height - src_height % 2; ++i) {
-                for (uint32_t j = 0; j < src_width - src_width % 2; ++j) {
+            for (uint32_t i = 0; i < src_height - src_height % 2; i += 2) {
+                for (uint32_t j = 0; j < src_width - src_width % 2; j += 2) {
+// #ifdef MIPMAP_DEBUG_INFO
+//             std::cout << "Creating pixel row " << i << " col " << j << ".\n" << std::flush;
+// #endif   
                     uint8_t* tl = &current_src[i * src_width * m_Channels + j * m_Channels];
                     uint8_t* tr = tl + m_Channels;
                     uint8_t* bl = tl + src_width * m_Channels;
