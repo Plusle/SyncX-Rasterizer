@@ -25,19 +25,7 @@ namespace SyncX {
     // and vise versa.
 
     Texture::Texture(const char* filename, bool inverse, bool mipmap) {
-        // int c_len = std::strlen(filename), idx = c_len;
-        // while (--idx >= 0) 
-        //     if (filename[idx] == '.') break;
-        // char* ext = new char[c_len - idx];
-        // std::strcpy(ext, &filename[idx]);
-
-        std::string name(filename);
-        std::string extension = name.substr(name.length() - 3, 3);
-        
-        constexpr int required_components = 4;
-        if (!strcmp(extension.c_str(), "jpg")) m_Channels = 3;
-        else if (!strcmp(extension.c_str(), "png")) m_Channels = 4;
-        else m_Channels = 1;
+        int32_t required_components = GetChannels(filename);
         m_Data = stbi_load(filename, &m_Width, &m_Height, &m_Channels, required_components);
         if (m_Data == nullptr) {
             std::cerr << "Unable to load texture \"" << filename << "\" by stb_image, exit" << std::endl;
@@ -47,45 +35,36 @@ namespace SyncX {
         layer_compacity = std::vector<uint32_t>();
 #endif
 
-#if 1
         if (mipmap) GenerateMipmap();
-#endif
     }
 
     Texture::~Texture() {
         STBI_FREE(m_Data);
     }
 
-    Vector3f Texture::Get(int i, int j) const {
+    Vector3f Texture::Get(int32_t i, int32_t j) const {
         constexpr float deno = 1 / 255.0;
-        int idx = (i * m_Width + j) * m_Channels;
+        int32_t idx = (i * m_Width + j) * m_Channels;
         float r = deno * m_Data[idx];
         float g = deno * m_Data[idx + 1];
         float b = deno * m_Data[idx + 2];
         return { r, g, b };
     }
 
-    Vector3f Texture::GetColor(float u, float v, SampleApproximation mode) const {
-#if 1
-        return { 0.5f, 0.5f, 0.5f };
-#else
-        switch(mode) {
-            case SampleApproximation::Linear:
-                return GetColorLinear(u, v);
-            case SampleApproximation::Nearest:
-                return GetColorNearest(u, v);
-            default:
-                assert(false); return { 0.f, 0.f, 0.f };
-        }
-#endif
+    int32_t Texture::GetChannels(const char* filename) const {
+        const char* ext = &filename[std::strlen(filename) - 3];
+        if (!std::strcmp(ext, "png")) return 4;
+        else if (!std::strcmp(ext, "jpg")) return 3;
+        return 3;
     }
 
     void Texture::GenerateMipmap() {
-        m_MipmapMaxLevel = -1;
 #ifndef MIPMAP_DEBUG_INFO
         std::vector<uint32_t> layer_compacity;
 #endif
-        for (uint32_t width = m_Width, height = m_Height; 
+
+        m_MipmapMaxLevel = -1;
+        for (int32_t width = m_Width, height = m_Height; 
                 width != 1 && height != 1; 
                 ++m_MipmapMaxLevel, width >>= 1, height >>= 1) {
             layer_compacity.push_back(m_Channels * width * height);
@@ -96,14 +75,14 @@ namespace SyncX {
         uint32_t byte_sum = std::accumulate(layer_compacity.cbegin(), layer_compacity.cend(), 0);
 
         m_MipmapOffset = std::vector<uint32_t>(m_MipmapMaxLevel + 1, 0);
-        for (uint32_t level = 1; level <= m_MipmapMaxLevel; ++level) {
+        for (int32_t level = 1; level <= m_MipmapMaxLevel; ++level) {
             m_MipmapOffset[level] = m_MipmapOffset[level - 1] + layer_compacity[level - 1];
         }
         
         uint8_t* mipmap_data = new uint8_t[byte_sum];
         //--------------------------------------------------------------
         std::memcpy(mipmap_data, m_Data, layer_compacity[0]);
-        for (uint32_t level = 1, src_width = m_Width, src_height = m_Height;
+        for (int32_t level = 1, src_width = m_Width, src_height = m_Height;
              level <= m_MipmapMaxLevel; 
              ++level, src_height >>= 1, src_width >>= 1) {
 #ifdef MIPMAP_DEBUG_INFO
@@ -111,16 +90,13 @@ namespace SyncX {
 #endif
             uint8_t* current_src = &mipmap_data[m_MipmapOffset[level - 1]];
             uint8_t* current_dst = &mipmap_data[m_MipmapOffset[level]];
-            for (uint32_t i = 0; i < src_height - src_height % 2; i += 2) {
-                for (uint32_t j = 0; j < src_width - src_width % 2; j += 2) {
-// #ifdef MIPMAP_DEBUG_INFO
-//             std::cout << "Creating pixel row " << i << " col " << j << ".\n" << std::flush;
-// #endif   
+            for (int32_t i = 0; i < src_height - src_height % 2; i += 2) {
+                for (int32_t j = 0; j < src_width - src_width % 2; j += 2) {
                     uint8_t* tl = &current_src[i * src_width * m_Channels + j * m_Channels];
                     uint8_t* tr = tl + m_Channels;
                     uint8_t* bl = tl + src_width * m_Channels;
                     uint8_t* br = bl + m_Channels;
-                    for (uint32_t k = 0; k < m_Channels; ++k) {
+                    for (int32_t k = 0; k < m_Channels; ++k) {
                         current_dst[k] = (tl[k] + tr[k] + bl[k] + br[k]) / 4;
                     }
                     current_dst += m_Channels;
@@ -138,13 +114,86 @@ namespace SyncX {
         return m_MipmapMaxLevel != -1;
     }
 
-    Vector3f Texture::GetColorLinear(float u, float v) const {
-        return { 0.f, 0.f, 0.f };
+    std::tuple<int32_t, int32_t> Texture::GetInterpolationDirection(const Vector2f& uv) const {
+        int32_t horizontal = uv.x - std::floor(uv.x) < 0.5f ? -1 : 1;
+        int32_t vertical = uv.y - std::floor(uv.y) < 0.5 ? 1 : -1;
+        return std::make_tuple(vertical, horizontal);
     }
 
-    Vector3f Texture::GetColorNearest(float u, float v) const {
-        uint32_t x = clamp<uint32_t>(u * (float)m_Width,  0, m_Width - 1);
-        uint32_t y = clamp<uint32_t>(v * (float)m_Height, 0, m_Height - 1);
+    Vector3f Texture::GetTexel(int32_t i, int32_t j, int32_t width, int32_t height, int32_t level) const {
+        uint8_t* texel = m_Data + m_MipmapOffset[level];
+        texel += i * width * m_Channels + j * m_Channels;
+        float r = static_cast<float>(texel[0]);
+        float g = static_cast<float>(texel[1]);
+        float b = static_cast<float>(texel[2]);
+
+        return { r, g, b };
+    }
+
+    Vector3f Texture::GetColorBilinear(const Vector2f& uv, int32_t level) const {
+        int32_t width = m_Width, height = m_Height;
+        uint8_t* texture = m_Data;
+
+        if (HasMipmap()) {
+            texture += m_MipmapOffset[level];
+            int32_t i = level;
+            while (i != 0) {
+                width /= 2; height /= 2;
+            }
+        }
+
+        float col = static_cast<float>(width) * uv.x;
+        float row = static_cast<float>(height) * uv.y;
+
+        auto [ vertical, horizontal ] = GetInterpolationDirection(uv);
+        float v_coeff = row - std::floor(row) + (vertical == -1 ? 0.5f : -0.5f);
+        float h_coeff = col - std::floor(col) + (horizontal == -1 ? 0.5f : -0.5f);
+
+        int32_t i0 = clamp<int32_t>(static_cast<int32_t>(row), 0, height - 1);
+        int32_t j0 = clamp<int32_t>(static_cast<int32_t>(col), 0, width - 1);
+        int32_t i1 = clamp<int32_t>(i0 + vertical, 0, height - 1);
+        int32_t j1 = clamp<int32_t>(j0 + horizontal, 0, width - 1);
+
+        Vector3f color_tl = GetTexel(i0, j0, width, height, level);
+        Vector3f color_tr = GetTexel(i0, j1, width, height, level);
+        Vector3f color_bl = GetTexel(i1, j0, width, height, level);
+        Vector3f color_br = GetTexel(i1, j1, width, height, level);
+        
+        if (vertical == -1) {
+            std::swap(color_tl, color_bl);
+            std::swap(color_tr, color_br);
+        }
+
+        if (horizontal == -1) {
+            std::swap(color_tl, color_tr);
+            std::swap(color_bl, color_br);
+        }
+
+        Vector3f color_top = lerp(color_tl, color_tr, h_coeff);
+        Vector3f color_bot = lerp(color_bl, color_br, h_coeff);
+        Vector3f bilinear_color = lerp(color_top, color_bot, v_coeff);
+
+        return bilinear_color;
+    }
+
+    Vector3f Texture::GetColorTrilinear(const Vector2f& uv, const Vector2f& uv_x, const Vector2f& uv_y) const {
+        int32_t u0 = uv.x * (float)m_Width, v0 = uv.y * (float)m_Height;
+        int32_t ux = uv_x.x * (float)m_Width, vx = uv_x.y * (float)m_Height;
+        int32_t uy = uv_y.x * (float)m_Width, vy = uv_y.y * (float)m_Height;
+        float L = std::max(std::sqrt((ux - u0) * (ux - u0) + (vx - v0) * (vx - v0)), 
+                           std::sqrt((uy - u0) * (uy - u0) + (vy - v0) * (vy - v0)));
+        float D = std::log2f(L);
+        float level1 = std::floor(D);
+        float level2 = std::ceil(D);
+        float coeff  = D - level1;
+        
+        Vector3f trilinear_color = lerp(GetColorBilinear(uv, level1), GetColorBilinear(uv, level2), coeff);
+        return trilinear_color;
+    }
+
+    Vector3f Texture::GetColorNearest(const Vector2f& uv) const {
+        uint32_t x = clamp<uint32_t>(uv.x * (float)m_Width,  0, m_Width - 1);
+        uint32_t y = clamp<uint32_t>(uv.y * (float)m_Height, 0, m_Height - 1);
 
         return Get(y, x);
     }
