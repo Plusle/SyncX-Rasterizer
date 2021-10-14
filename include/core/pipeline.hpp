@@ -10,7 +10,7 @@ struct VertexShaderPayload {
     Matrix4f view;
     Matrix4f projection;
 };
-
+    
 struct FragmentShaderPayload {
     
 };
