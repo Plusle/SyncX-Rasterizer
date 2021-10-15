@@ -1,4 +1,4 @@
-# SynchronixZ's Software Rasterizer 
+# SynchronizX's Software Rasterizer 
 
 ## Introduction
 This is a software rasterizer which is designed just for studying of rasterizaion pipeline. 
