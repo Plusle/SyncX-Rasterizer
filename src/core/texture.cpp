@@ -120,17 +120,19 @@ namespace SyncX {
         return std::make_tuple(vertical, horizontal);
     }
 
-    Vector3f Texture::GetTexel(int32_t i, int32_t j, int32_t width, int32_t height, int32_t level) const {
+    Vector4f Texture::GetTexel(int32_t i, int32_t j, int32_t width, int32_t height, int32_t level) const {
         uint8_t* texel = m_Data + m_MipmapOffset[level];
         texel += i * width * m_Channels + j * m_Channels;
         float r = static_cast<float>(texel[0]);
         float g = static_cast<float>(texel[1]);
         float b = static_cast<float>(texel[2]);
-
-        return { r, g, b };
+        float a = 1.0f;
+        if (m_Channels == 4)
+            a = static_cast<float>(texel[3]);
+        return { r, g, b, a };
     }
 
-    Vector3f Texture::GetColorBilinear(const Vector2f& uv, int32_t level) const {
+    Vector4f Texture::GetColorBilinear(const Vector2f& uv, int32_t level) const {
         int32_t width = m_Width, height = m_Height;
         uint8_t* texture = m_Data;
 
@@ -154,10 +156,10 @@ namespace SyncX {
         int32_t i1 = clamp<int32_t>(i0 + vertical, 0, height - 1);
         int32_t j1 = clamp<int32_t>(j0 + horizontal, 0, width - 1);
 
-        Vector3f color_tl = GetTexel(i0, j0, width, height, level);
-        Vector3f color_tr = GetTexel(i0, j1, width, height, level);
-        Vector3f color_bl = GetTexel(i1, j0, width, height, level);
-        Vector3f color_br = GetTexel(i1, j1, width, height, level);
+        Vector4f color_tl = GetTexel(i0, j0, width, height, level);
+        Vector4f color_tr = GetTexel(i0, j1, width, height, level);
+        Vector4f color_bl = GetTexel(i1, j0, width, height, level);
+        Vector4f color_br = GetTexel(i1, j1, width, height, level);
         
         if (vertical == -1) {
             std::swap(color_tl, color_bl);
@@ -169,14 +171,14 @@ namespace SyncX {
             std::swap(color_bl, color_br);
         }
 
-        Vector3f color_top = lerp(color_tl, color_tr, h_coeff);
-        Vector3f color_bot = lerp(color_bl, color_br, h_coeff);
-        Vector3f bilinear_color = lerp(color_top, color_bot, v_coeff);
+        Vector4f color_top = lerp(color_tl, color_tr, h_coeff);
+        Vector4f color_bot = lerp(color_bl, color_br, h_coeff);
+        Vector4f bilinear_color = lerp(color_top, color_bot, v_coeff);
 
         return bilinear_color;
     }
 
-    Vector3f Texture::GetColorTrilinear(const Vector2f& uv, const Vector2f& uv_x, const Vector2f& uv_y) const {
+    Vector4f Texture::GetColorTrilinear(const Vector2f& uv, const Vector2f& uv_x, const Vector2f& uv_y) const {
         int32_t u0 = uv.x * (float)m_Width, v0 = uv.y * (float)m_Height;
         int32_t ux = uv_x.x * (float)m_Width, vx = uv_x.y * (float)m_Height;
         int32_t uy = uv_y.x * (float)m_Width, vy = uv_y.y * (float)m_Height;
@@ -187,15 +189,15 @@ namespace SyncX {
         float level2 = std::ceil(D);
         float coeff  = D - level1;
         
-        Vector3f trilinear_color = lerp(GetColorBilinear(uv, level1), GetColorBilinear(uv, level2), coeff);
+        Vector4f trilinear_color = lerp(GetColorBilinear(uv, level1), GetColorBilinear(uv, level2), coeff);
         return trilinear_color;
     }
 
-    Vector3f Texture::GetColorNearest(const Vector2f& uv) const {
+    Vector4f Texture::GetColorNearest(const Vector2f& uv) const {
         uint32_t x = clamp<uint32_t>(uv.x * (float)m_Width,  0, m_Width - 1);
         uint32_t y = clamp<uint32_t>(uv.y * (float)m_Height, 0, m_Height - 1);
-
-        return Get(y, x);
+        Vector3f color = Get(y, x);
+        return Vector4f(color.x, color.y, color.z, 1.0f);
     }
 
 

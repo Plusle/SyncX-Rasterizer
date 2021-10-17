@@ -28,7 +28,7 @@ target_link_libraries(Renderer
 )
 
 add_library(IODevice
-    displayer.cpp
+    io_interface.cpp
 )
 
 target_link_libraries(IODevice

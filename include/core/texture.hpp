@@ -3,6 +3,7 @@
 #include <math/vector.hpp>
 
 #include <vector>
+#include <tuple>
 
 namespace SyncX {
 
@@ -29,10 +30,10 @@ namespace SyncX {
         void GenerateMipmap();
         bool HasMipmap() const;
         std::tuple<int32_t, int32_t> GetInterpolationDirection(const Vector2f& uv) const;
-        Vector3f GetTexel(int32_t i, int32_t j, int32_t width, int32_t height, int32_t level) const;
-        Vector3f GetColorBilinear(const Vector2f& uv, int32_t level = 0) const;
-        Vector3f GetColorTrilinear(const Vector2f& uv, const Vector2f& uv_x, const Vector2f& uv_y) const;
-        Vector3f GetColorNearest(const Vector2f& uv) const;
+        Vector4f GetTexel(int32_t i, int32_t j, int32_t width, int32_t height, int32_t level) const;
+        Vector4f GetColorBilinear(const Vector2f& uv, int32_t level = 0) const;
+        Vector4f GetColorTrilinear(const Vector2f& uv, const Vector2f& uv_x, const Vector2f& uv_y) const;
+        Vector4f GetColorNearest(const Vector2f& uv) const;
 
 
 

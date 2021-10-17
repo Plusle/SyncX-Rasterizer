@@ -2,7 +2,7 @@
 
 namespace SyncX {
 
-void Renderer::Render() const {
+void Renderer::Render(std::vector<Vector4f>& framebuffer, uint32_t width, uint32_t height) const {
     
 }
 
