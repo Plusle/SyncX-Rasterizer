@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     uint8_t* origin = stbi_load(filename.c_str(), &x, &y, &ch, req);
 
     std::vector<uint8_t*> layer_ptr;
-    uint32_t layers = static_cast<uint32_t>(std::min(log2(x), log2(y)));
+    //uint32_t layers = static_cast<uint32_t>(std::min(log2(x), log2(y)));
     std::cout << x << ' ' << y << ' ' << ch << ' ' << req << '\n';
 
     std::ofstream ori("MipmapPrototypeOrigin.ppm", std::ios::out);
@@ -35,10 +35,10 @@ int main(int argc, char** argv) {
     ori.close();
 
 
-    uint8_t* buffer = new uint8_t[x * y * req];
+    //uint8_t* buffer = new uint8_t[x * y * req];
     uint8_t* mipmap = new uint8_t[(x / 2) * (y / 2) * req];
     
-#if 1
+#if 0
     uint8_t* cur_pixel = buffer;
     for (int i = 0; i < y; ++i) {
         for (int j = 0; j < x - x % 2; j += 2) {
@@ -100,6 +100,8 @@ int main(int argc, char** argv) {
     }
     std::cout << "\nMipmap Done" << std::endl;
     ppm.close();
+
+    delete [] mipmap;
 
     STBI_FREE(origin);
 

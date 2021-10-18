@@ -134,10 +134,7 @@ namespace SyncX {
 
     Vector4f Texture::GetColorBilinear(const Vector2f& uv, int32_t level) const {
         int32_t width = m_Width, height = m_Height;
-        uint8_t* texture = m_Data;
-
         if (HasMipmap()) {
-            texture += m_MipmapOffset[level];
             int32_t i = level;
             while (i != 0) {
                 width /= 2; height /= 2;

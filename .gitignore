@@ -1,5 +1,7 @@
 build/
 .vscode/
+.vs/
+CMakeSettings.json
 /*.ppm
 /*.png
 /*.jpg
