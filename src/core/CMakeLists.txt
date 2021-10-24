@@ -22,6 +22,11 @@ add_library(Renderer
     renderer.cpp
 )
 
+target_link_libraries(Loader
+    Scene
+    Texture
+)
+
 target_link_libraries(Renderer
     Scene
     Pipeline

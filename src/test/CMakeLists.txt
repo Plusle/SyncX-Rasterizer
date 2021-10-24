@@ -34,3 +34,11 @@ add_executable(MipmapLayersDisplay
 target_link_libraries(MipmapLayersDisplay
     Texture
 )
+
+add_executable(LoaderPrototypeTest
+    LoaderPrototypeTest.cpp
+)
+
+target_link_libraries(LoaderPrototypeTest
+    Loader
+)

@@ -1,7 +1,9 @@
 build/
+output/
 .vscode/
 .vs/
 CMakeSettings.json
 /*.ppm
 /*.png
 /*.jpg
+obj/

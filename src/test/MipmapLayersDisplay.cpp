@@ -1,4 +1,4 @@
-#define MIPMAP_DEBUG_INFO
+//#define MIPMAP_DEBUG_INFO
 #include <core/texture.hpp>
 
 #include <iostream>
@@ -12,6 +12,7 @@ int main(int argc, char** argv) {
     std::string l[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
     for (uint32_t level = 0; level <= t.m_MipmapMaxLevel; ++level) {
         std::string filename = "mipmap_level" + l[level] + ".ppm";
+        std::cout << "Generating level " << level << " into file " << filename << std::endl;
         //uint32_t capcity = t.layer_compacity[level];
         uint8_t* starter = &(t.m_Data[t.m_MipmapOffset[level]]);
         uint32_t bytes = 0;

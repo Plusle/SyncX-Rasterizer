@@ -1,4 +1,3 @@
-#define MIPMAP_DEBUG_INFO
 #include <core/texture.hpp>
 #include <math/linear.hpp>
 
@@ -11,19 +10,6 @@
 #include <external/stb_image.h>
 
 namespace SyncX {
-    // Note:
-    // The meanings of uv/xy and ij are different
-    // In xy-/uv-manner, x/u is corresponded to horizontal axis, y/v is corresponded to vertical axis.
-    // In other word, xy-/uv-manner treats the object as an image
-    // In ij-manner, i represents the i-th row, j represents the j-th column. 
-    // In oterh word, ij-manner treats the object as a matrix
-    // In conclusion, if you have a xy and want to use it to get sample on texture 
-    // by a function which parameters are ij, you should invoke it like:
-    // 
-    //          func(y, x, ...)
-    //
-    // and vise versa.
-
     Texture::Texture(const char* filename, bool inverse, bool mipmap) {
         int32_t required_components = GetChannels(filename);
         m_Data = stbi_load(filename, &m_Width, &m_Height, &m_Channels, required_components);
@@ -31,9 +17,8 @@ namespace SyncX {
             std::cerr << "Unable to load texture \"" << filename << "\" by stb_image, exit" << std::endl;
             std::exit(1);
         }
-#ifdef MIPMAP_DEBUG_INFO
+
         layer_compacity = std::vector<uint32_t>();
-#endif
 
         if (mipmap) GenerateMipmap();
     }
@@ -59,9 +44,6 @@ namespace SyncX {
     }
 
     void Texture::GenerateMipmap() {
-#ifndef MIPMAP_DEBUG_INFO
-        std::vector<uint32_t> layer_compacity;
-#endif
 
         m_MipmapMaxLevel = -1;
         for (int32_t width = m_Width, height = m_Height; 
@@ -85,9 +67,7 @@ namespace SyncX {
         for (int32_t level = 1, src_width = m_Width, src_height = m_Height;
              level <= m_MipmapMaxLevel; 
              ++level, src_height >>= 1, src_width >>= 1) {
-#ifdef MIPMAP_DEBUG_INFO
-            std::cerr << "Begin to generating mipmap level " << level << ".\n" << std::flush;
-#endif
+
             uint8_t* current_src = &mipmap_data[m_MipmapOffset[level - 1]];
             uint8_t* current_dst = &mipmap_data[m_MipmapOffset[level]];
             for (int32_t i = 0; i < src_height - src_height % 2; i += 2) {
@@ -150,8 +130,8 @@ namespace SyncX {
 
         int32_t i0 = clamp<int32_t>(static_cast<int32_t>(row), 0, height - 1);
         int32_t j0 = clamp<int32_t>(static_cast<int32_t>(col), 0, width - 1);
-        int32_t i1 = clamp<int32_t>(i0 + vertical, 0, height - 1);
-        int32_t j1 = clamp<int32_t>(j0 + horizontal, 0, width - 1);
+        int32_t i1 = clamp<int32_t>(i0 + vertical, 0, width - 1);
+        int32_t j1 = clamp<int32_t>(j0 + horizontal, 0, height - 1);
 
         Vector4f color_tl = GetTexel(i0, j0, width, height, level);
         Vector4f color_tr = GetTexel(i0, j1, width, height, level);

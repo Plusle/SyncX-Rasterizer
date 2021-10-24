@@ -19,10 +19,10 @@ void VertexShader::operator()(Scene* sc, VertexShaderPayload& payload) {
     
     // Need a temporary buffer for transformed vertrices
     // or call it stream output?
-    for (Vertex vertex : sc->m_Vertrices) {
-        // for each member;
-        m_VertexBuffer.push_back(vertex);
-    }    
+    //for (Vertex vertex : sc->m_Vertrices) {
+    //    // for each member;
+    //    m_VertexBuffer.push_back(vertex);
+    //}    
 }
 
 }   // namespace SyncX

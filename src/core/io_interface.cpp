@@ -47,10 +47,10 @@ void ImagePrinter::Display(Renderer* r) {
         std::exit(1);
     }
 
-    ClearBuffer();
 
     // Switch to 1 after Render() is done
     #if 0
+        ClearBuffer();
         r->Render(m_Framebuffer, m_Width, m_Height);
     #else
         DebugImageInit();

@@ -91,9 +91,9 @@ int main(int argc, char** argv) {
 
     std::ofstream ppm("MipmapPrototype.ppm", std::ios::out);
     ppm << "P3\n" << width << ' ' << height << "\n255\n";
-    for (int i = 0; i < width; ++i) {
+    for (int i = 0; i < height; ++i) {
         std::cout << "\rScanline No." << i << ' ' << std::flush;
-        for (int j = 0; j < height; ++j) {
+        for (int j = 0; j < width; ++j) {
             auto* cur = &mipmap[i * width * req + j * req]; 
             ppm << (int)cur[0] << ' ' << (int)cur[1] << ' ' << (int)cur[2] << '\n';
         }

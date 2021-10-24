@@ -6,7 +6,7 @@
 
 namespace SyncX {
     struct Triangle {
-        size_t v1, v2, v3;
-        Texture* t;
+        size_t v1, v2, v3, t;
+
     };
 }

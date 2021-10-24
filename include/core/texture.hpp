@@ -18,9 +18,9 @@ namespace SyncX {
 
         int32_t m_Width, m_Height, m_Channels;
 
-#ifdef MIPMAP_DEBUG_INFO
+//#ifdef MIPMAP_DEBUG_INFO
         std::vector<uint32_t> layer_compacity;
-#endif
+//#endif
         uint8_t* m_Data;
         int32_t m_MipmapMaxLevel;
         std::vector<uint32_t> m_MipmapOffset;
