@@ -155,10 +155,17 @@ namespace SyncX {
         return bilinear_color;
     }
 
-    Vector4f Texture::GetColorTrilinear(const Vector2f& uv, const Vector2f& uv_x, const Vector2f& uv_y) const {
+    // Calling this function need dx and dy to determine mipmap level.
+    // Conventionally, this application would try to assign right and bottom pixel, firstly.
+    // But if anyone doesn't exist, then try to assign opposite pixel. If still doesn't exist, assign itself then.
+    // That means:
+    // dx = right pixel exists ? right pixel : (left pixel exists ? left pixel : itself)
+    // dy = top pixel exists ? top pixel : (bottom pixel exists? bottom pixel : itself)
+    // More details will be introduced in shader code
+    Vector4f Texture::GetColorTrilinear(const Vector2f& uv, const Vector2f& duv_dx, const Vector2f& duv_dy) const {
         int32_t u0 = uv.x * (float)m_Width, v0 = uv.y * (float)m_Height;
-        int32_t ux = uv_x.x * (float)m_Width, vx = uv_x.y * (float)m_Height;
-        int32_t uy = uv_y.x * (float)m_Width, vy = uv_y.y * (float)m_Height;
+        int32_t ux = duv_dx.x * (float)m_Width, vx = duv_dx.y * (float)m_Height;
+        int32_t uy = duv_dy.x * (float)m_Width, vy = duv_dy.y * (float)m_Height;
         float L = std::max(std::sqrt((ux - u0) * (ux - u0) + (vx - v0) * (vx - v0)), 
                            std::sqrt((uy - u0) * (uy - u0) + (vy - v0) * (vy - v0)));
         float D = std::log2f(L);

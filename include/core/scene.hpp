@@ -1,7 +1,7 @@
 #pragma once
 
 #include <math/vertex.hpp>
-#include <math/triangle.hpp>
+#include <core/object.hpp>
 #include <core/texture.hpp>
 
 #include <vector>
@@ -13,17 +13,19 @@ namespace SyncX {
     public:
         Scene() {}
         friend class Loader;
+        friend class Renderer;
 
 #if 1
-        std::vector<Vertex>& GetVertrices() { return m_Vertrices; }
-        std::vector<Triangle>& GetTriangles() { return m_Triangles; }
+        std::vector<Vertex>& GetVertices() { return m_Vertices; }
+        std::vector<Triangle>& GetTriangles() { return m_Faces; }
         std::vector<Texture*>& GetTextures() { return m_Textures; }
 #endif
 
     private:
-        std::vector<Vertex> m_Vertrices;
-        std::vector<Triangle> m_Triangles;
+        std::vector<Vertex> m_Vertices;
+        std::vector<Triangle> m_Faces;
         std::vector<Texture*> m_Textures;
+        std::vector<uint32_t> m_Models;
     };
 
     struct RTScene {};

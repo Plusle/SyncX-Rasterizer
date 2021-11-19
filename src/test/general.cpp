@@ -40,9 +40,9 @@ int main(int argc, char** argv) {
     // uint8_t b1 = 255, b2 = 1;
     // uint8_t r = b1 + b2;
     // std::cout << (int)r;
-    const char* word = "Hello, world!";
-    const char* a = &word[std::strlen(word) - 1];
-    std::cout << a;
+    // const char* word = "Hello, world!";
+    // const char* a = &word[std::strlen(word) - 1];
+    // std::cout << a;
 
     return 0;
 }
