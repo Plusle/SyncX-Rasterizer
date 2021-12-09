@@ -40,7 +40,7 @@ void ImagePrinter::DebugImageInit() {
     }
 }
 
-void ImagePrinter::Display(Renderer* r) {
+void ImagePrinter::Display() {
     std::ofstream ppm(m_Filename, std::ios::out);
     if (!ppm.is_open()) {
         std::cerr << "Unable to create file." << std::endl;
@@ -48,13 +48,9 @@ void ImagePrinter::Display(Renderer* r) {
     }
 
 
-    // Switch to 1 after Render() is done
-    #if 0
-        ClearBuffer();
-        r->Render(m_Framebuffer, m_Width, m_Height);
-    #else
-        DebugImageInit();
-    #endif
+    // This is just for debugging
+    // Rewrite this part after pipeline is done
+    DebugImageInit();
 
     ppm << "P3\n" << m_Width << ' ' << m_Height << "\n255\n";
     
@@ -75,7 +71,7 @@ void ImagePrinter::Display(Renderer* r) {
 Win32Platform::Win32Platform(const char* title, uint32_t width, uint32_t height) 
                 : m_Title(title), IODevice(width, height) {}
 
-void Win32Platform::Display(Renderer* r) {
+void Win32Platform::Display() {
 
 } 
 

@@ -4,7 +4,7 @@
 
 namespace SyncX {
 
-    struct RawDatas {
+    struct RawVertex {
         Vector3f position;
         Vector3f normal;
         Vector2f uv;
@@ -12,7 +12,14 @@ namespace SyncX {
         Vector3f bitangent;
     };
 
-    using Vertex = RawDatas;
-    using Pixel = RawDatas;
+    struct Vertex {
+        Vector4f position;
+        Vector4f normal;
+        Vector2f uv;
+        Vector4f tangent;
+        Vector4f bitangent;
+    };
+
+    using Fragment = Vertex;
 
 }   // namespace SyncX

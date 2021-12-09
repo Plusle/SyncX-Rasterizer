@@ -30,7 +30,7 @@ As always, the application start from the `main` function. Conceptually, there a
 
 
 
-## Structure of `Scene`, the center of preparation
+## Structure of `Scene`, the warehouse for rendering stage
 
 `Scene` contains a series of buffer.
 
@@ -45,11 +45,13 @@ private:
 };
 ```
 
-In the terminology of OpenGL, `m_Vertices`, `m_Faces`, `m_Textrues` are equivalent to VBO, EBO, Texture buffer. Since I store vertex data in struct `Vertex`, I don't need a VAO. We usually render several models by invoking draw call on each model. To do so, I also add an indices of `Model`, which stores the index(subscription in `m_Faces`) of faces.
+In the terminology of OpenGL, `m_Vertices`, `m_Faces`, `m_Textrues` are equivalent to VBO, EBO, Texture buffer. Since I store vertex data in struct `Vertex`, I don't need a VAO. We usually render several models by invoking draw call on each model. To do so, I also add an indices of `Model`, which stores the index(subscription in `m_Faces`) of faces. Model data loade
 
-Normally, initializing an instance of `Scene` need doing nothing. `Scene` only exposes its `m_Models` because I think modification on buffer should only be accessible through the API. 
+Normally, initializing an instance of `Scene` need doing nothing. `Scene` only exposes its `m_Models` because I think modification on buffer should only be accessible through the API. F
 
 Note that `Scene` only provide models for its interface.  That is because in the stage of shader, vertices should be loaded with the form so-called 'stream'. In code using graphics API, the `Model` class usually has a member function called `render()` to invoke drawcall with particular configuration and shader program. Hence, in this application, vertices will be collected within struct `Model` in advance.
+
+
 
 
 

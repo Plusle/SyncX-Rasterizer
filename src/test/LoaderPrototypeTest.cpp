@@ -8,6 +8,7 @@ int main() {
 	SyncX::Loader loader(&scene);
 
 	loader.Execute("./obj/miku.obj");
+	loader.Execute("./obj/miku.obj");
 
 	return 0;
 }

@@ -40,6 +40,7 @@ namespace SyncX {
         Matrix3 operator*(const Matrix3& mat) const;
         Matrix3 operator*(T c) const;
         Matrix3& operator*=(T c);
+        Vector3<T> operator*(const Vector3<T>& v) const;
         Matrix3 operator/(T c) const;
         Matrix3& operator/=(T c);
         T* operator[](size_t i);
@@ -80,6 +81,7 @@ namespace SyncX {
         Matrix4 operator*(const Matrix4& mat) const;
         Matrix4 operator*(T c) const;
         Matrix4& operator*=(T c);
+        Vector4<T> operator*(const Vector4<T>& v) const;
         Matrix4 operator/(T c) const;
         Matrix4& operator/=(T c);
         T* operator[](size_t i);

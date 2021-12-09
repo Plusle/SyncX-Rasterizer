@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <algorithm>
 
 struct vec {
     float x, y;
@@ -44,5 +45,21 @@ int main(int argc, char** argv) {
     // const char* a = &word[std::strlen(word) - 1];
     // std::cout << a;
 
+
+    std::vector<int> src{1, 3, 5, 7, 9};
+    std::vector<int> dst;
+    std::copy(src.cbegin(), src.cend(), std::back_inserter(dst));
+    for (auto i : dst) {
+        std::cout << i << ' ';
+    }
+    std::cout << std::endl;
+
+    std::vector<int> dst2;
+    std::transform(src.cbegin(), src.cend(), std::back_inserter(dst2),
+        [](int i) -> int { return i + 1; });
+    for (auto i : dst2) {
+        std::cout << i << ' ';
+    }
+    std::cout << std::endl;
     return 0;
 }

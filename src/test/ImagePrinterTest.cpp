@@ -20,6 +20,6 @@ int main(int argc, char** argv) {
             printer2.m_Framebuffer[printer2.GetIndex(i, j)] = SyncX::Vector4f(r, g, b, 1.f);
         }
     }
-    printer2.Display(nullptr);
+    printer2.Display();
     return 0;
 }

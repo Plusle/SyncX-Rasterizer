@@ -16,16 +16,16 @@ namespace SyncX {
         friend class Renderer;
 
 #if 1
-        std::vector<Vertex>& GetVertices() { return m_Vertices; }
+        std::vector<RawVertex>& GetVertices() { return m_Vertices; }
         std::vector<Triangle>& GetTriangles() { return m_Faces; }
         std::vector<Texture*>& GetTextures() { return m_Textures; }
 #endif
 
     private:
-        std::vector<Vertex> m_Vertices;
+        std::vector<RawVertex> m_Vertices;
         std::vector<Triangle> m_Faces;
         std::vector<Texture*> m_Textures;
-        std::vector<uint32_t> m_Models;
+        std::vector<Model> m_Models;
     };
 
     struct RTScene {};

@@ -3,16 +3,17 @@
 
 #define MIPMAP_DEBUG_INFO
 #include <core/io_interface.hpp>
+#include <core/texture.hpp>
 
 namespace SyncX {
 struct DebugImagePrinter : IODevice {
     DebugImagePrinter() {
         m_Height = 600; m_Width = 800;
     }
-    virtual void Display(Renderer* r) override;
+    virtual void Display() override;
 };
 
-void DebugImagePrinter::Display(Renderer* r) {
+void DebugImagePrinter::Display() {
     std::ofstream ppm("TexPrototype.ppm", std::ios::out);
     if (!ppm.is_open()) {
         std::cerr << "Unable to create file." << std::endl;
@@ -54,7 +55,7 @@ void DebugImagePrinter::Display(Renderer* r) {
 
 int main(int argc, char** argv) {    
     SyncX::DebugImagePrinter ipr;
-    ipr.Display(nullptr);
+    ipr.Display();
 
     return 0;
 }

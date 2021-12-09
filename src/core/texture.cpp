@@ -44,7 +44,6 @@ namespace SyncX {
     }
 
     void Texture::GenerateMipmap() {
-
         m_MipmapMaxLevel = -1;
         for (int32_t width = m_Width, height = m_Height; 
                 width != 1 && height != 1; 

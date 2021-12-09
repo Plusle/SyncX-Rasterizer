@@ -1,41 +1,49 @@
 #pragma once
 
 #include <math/matrix.hpp>
+#include <math/transfrom.hpp>
 #include <core/scene.hpp>
+#include <core/io_interface.hpp>
+
+#include <atomic>
 
 namespace SyncX {
 
-struct VertexShaderPayload {
-    Matrix4f model;
-    Matrix4f view;
-    Matrix4f projection;
-};
-    
-struct FragmentShaderPayload {
-    
-};
+class Pipeline {
+public:
+	Pipeline(Scene* sc, IODevice* device, const Model& model) : m_Scene(sc), m_Device(device), m_Object(model) {}
+	
+	// step 1: copy faces to face buffer, remove offset
+	// then copy all corresponding vertices after transforming them by MVP matrix
+	void VertexProcess(const Transform& t);
 
-struct PipelineProcess { 
-    virtual std::vector<Vertex>& StreamOutput() = 0;
-};
+	// step 2: clipping & face culling
+	void ClippingCulling();
 
-struct VertexShader {
-    static Matrix4f GetModelMatrix(const Vector3f& translation, const Vector3f& axis, float radian);
-    static Matrix4f GetViewMatrix(const Vector3f& pos, const Vector3f& top, const Vector3f& dir);
-    static Matrix4f GetProjectionMatrix(float fov, float aspect, float near, float far);
-    void operator()(Scene* sc, VertexShaderPayload& payload);
-    std::vector<Vertex>& StreamOut();
+	// step 3: rasterization
+	void Rasterization();
 
-    std::vector<Vertex> m_VertexBuffer;
-};
+	//// step 3.1: MXAA
+	//void MXAASetting();
 
-struct Rasterizer {
-    void operator()(Scene* sc) const;
-};
+	// step 3.9: Early depth test
+	void PreDepthTest();
 
-struct FragmentShader {
+	// step 4: Fragment Shading
+	void FragmentShading();
 
-    void operator()(Scene* sc, FragmentShaderPayload& payload) const;
+	// step 5: Depth test & blending
+	void Blending();
+
+private:
+	Scene* m_Scene;
+	IODevice* m_Device;
+	const Model& m_Object;
+
+	std::vector<Vertex> m_VertexStream;
+	std::vector<Triangle> m_FaceStream;
+	std::vector<Fragment> m_Fragments;
+
 };
 
 }   // namespace SyncX

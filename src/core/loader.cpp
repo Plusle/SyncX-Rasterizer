@@ -6,6 +6,8 @@
 #include <string>
 #include <utility>
 
+#include <core/benchmark.hpp>
+
 namespace SyncX {
     static void GetFaceVertrices(const char* line, Triangle& t) {
         
@@ -20,14 +22,16 @@ namespace SyncX {
             std::exit(1);
         }
 
-        std::ifstream model(filename, std::ios::in);
-        if (!model.is_open()) {
+        std::ifstream obj(filename, std::ios::in);
+        if (!obj.is_open()) {
             std::cerr << "Unable to open model file \"" << filename << "\"." << std::endl;
             std::exit(1);
         }
 
         auto& verts = m_Scene->m_Vertices;
         auto& faces = m_Scene->m_Faces;
+        auto vert_offset = verts.size();
+        auto face_offset = faces.size();
         std::vector<Vector3f> positions;
         std::vector<Vector3f> normals;
         std::vector<Vector2f> tex_coords;
@@ -40,9 +44,13 @@ namespace SyncX {
             return false;
         };
 
+        std::cout << "Begin to load obj file: " << filename << ". There are " << vert_offset << " vertices in the buffer" << std::endl;
+        Timer timer;
+        timer.start();
+
         uint32_t face_count = 0;
-        while (!model.eof()) {
-            std::getline(model, line_buf);
+        while (!obj.eof()) {
+            std::getline(obj, line_buf);
             std::istringstream iss(line_buf.c_str());
             if (jump_to_next_line(line_buf)) continue;
             
@@ -66,9 +74,9 @@ namespace SyncX {
                              >> v2 >> trash >> vt2 >> trash >> vn2
                              >> v3 >> trash >> vt3 >> trash >> vn3;
                 Triangle tri;
-                tri.v1 = v1;
-                tri.v2 = v2;
-                tri.v3 = v3;
+                tri.v1 = v1 + vert_offset;
+                tri.v2 = v2 + vert_offset;
+                tri.v3 = v3 + vert_offset;
                 //tri.t = ?
                 
                 faces.push_back(tri);
@@ -82,14 +90,13 @@ namespace SyncX {
         assert(positions.size() == normals.size() && positions.size() == tex_coords.size());
 
         for (auto i = 0; i < positions.size(); ++i) {
-            Vertex v;
+            RawVertex v;
             v.position = positions[i];
             v.normal = normals[i];
             v.uv = tex_coords[i];
             verts.push_back(v);
         }
-
-        assert(positions.size() == verts.size());
+        assert(positions.size() == verts.size() - vert_offset);
 
 #if 0
         for (const auto& v : m_Scene->m_Vertrices) {
@@ -98,9 +105,20 @@ namespace SyncX {
         std::cout << std::flush;
 #endif
 
-        std::cout << "\nDone.\n";
-        std::cout << "Model: " << filename << " has " << positions.size() << " vertrices, " << face_count << " faces.\n"
+        Model model;
+        model.m_FaceFrom = face_offset;
+        model.m_FaceTo = faces.size();
+        model.m_VertexFrom = vert_offset;
+        model.m_VertexTo = verts.size();
+        m_Scene->m_Models.push_back(model);
+
+        timer.end();
+
+        std::cout << "Done.\n";
+        std::cout << "Used " << timer.elapsed() << " ms to load " << filename << std::endl;
+        std::cout << "This model has " << positions.size() << " vertrices, " << face_count << " faces.\n"
                   << "This Scene has " << verts.size() << " vertrices, " << faces.size() << " faces.\n";
+        std::cout << "---------------------------------------------------------------------------------\n";
     }
 
 
