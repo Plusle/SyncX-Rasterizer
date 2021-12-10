@@ -136,7 +136,6 @@ const T* Matrix3<T>::operator[](size_t i) const {
     return &m_Elem[i * 3];
 }
 
-
 template <typename T>
 inline Matrix3<T> CoefficentWiseProduct(const Matrix3<T>& a, const Matrix3<T>& b) {
     Matrix3<T> result(a);
@@ -152,7 +151,7 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix3<T>& mat) {
         os << '[';
         for (auto j = 0; j < 3; ++j) {
             if (j == 2) os << mat.m_Elem[i * 3 + j];
-            else os << mat.m_Elem[i * 3 + j] << "\t";
+            else os << mat.m_Elem[i * 3 + j] << '\t';
         }
         os << "]\n";
     }
@@ -322,7 +321,7 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix4<T>& mat) {
         os << '[';
         for (auto j = 0; j < 4; ++j) {
             if (j == 3) os << mat.m_Elem[i * 4 + j];
-            else os << mat.m_Elem[i * 4 + j] << "\t";
+            else os << mat.m_Elem[i * 4 + j] << '\t';
         }
         os << "]\n";
     }

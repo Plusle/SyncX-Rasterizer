@@ -1,4 +1,5 @@
 #include <core/io_interface.hpp>
+#include <core/benchmark.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -59,7 +60,7 @@ void ImagePrinter::Display() {
     //DebugImageInit();
 
     for (auto& model : m_Scene->GetModels()) {
-        m_Renderer->Render(&model);
+        //m_Renderer->Render(&model);
     }
 
 #if 0
@@ -86,7 +87,16 @@ Win32Platform::Win32Platform(const char* title, uint32_t width, uint32_t height)
 Win32Platform::~Win32Platform() {}
 
 void Win32Platform::Display() {
-
+    Timer timer;
+    timer.start();
+    while (true) {
+        for (auto& model : m_Scene->GetModels()) {
+            Transform MVP;
+            double time = timer.elapsed();
+            MVP.model = 
+            m_Renderer->Render(&model, MVP);
+        }
+    }
 } 
 
 }   // namespace SyncX

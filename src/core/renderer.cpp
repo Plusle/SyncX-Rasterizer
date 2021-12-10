@@ -10,7 +10,7 @@ Renderer::~Renderer() {
 	delete m_Pipeline;
 }
 
-void Renderer::Render(Model* model) {
+void Renderer::Render(Model* model, const Transform& MVP) {
 	m_Pipeline->Initialize(model);
 	///.....
 }

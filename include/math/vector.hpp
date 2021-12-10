@@ -25,8 +25,8 @@ namespace SyncX {
         T& operator[](size_t);
         const T& operator[](size_t) const;
 
-        T SquaredLength();
-        float Length();
+        T SquaredLength() const;
+        float Length() const;
         Vector2& Normalized();
         Vector2 TempNormalized();
 
@@ -58,14 +58,16 @@ namespace SyncX {
         T& operator[](size_t);
         const T& operator[](size_t) const;
 
-        T SquaredLength();
-        float Length();
+        T SquaredLength() const;
+        float Length() const;
         Vector3& Normalized();
         Vector3 TempNormalized();
 
         T x, y, z;
     };
 
+    template <typename T>
+    inline Vector3<T> cross(const Vector3<T>& a, const Vector3<T>& b);
     template <typename T>
     inline Vector3<T> operator*(T c, const Vector3<T>& v);
     template <typename T>
@@ -92,8 +94,8 @@ namespace SyncX {
         T& operator[](size_t);
         const T& operator[](size_t) const;
 
-        T SquaredLength();
-        float Length();
+        T SquaredLength() const;
+        float Length() const;
         Vector4& Normalized();
         Vector4 TempNormalized();
 
