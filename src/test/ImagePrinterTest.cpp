@@ -7,6 +7,7 @@
 int main(int argc, char** argv) {
     uint32_t width = std::atoi(argv[1]), height = std::atoi(argv[2]);
     SyncX::ImagePrinter printer2("imagetest.ppm", width, height);
+    printer2.Init(nullptr);
     std::ofstream ppm("imagetest2.ppm", std::ios::out);
     ppm << "P3\n" << printer2.m_Width << ' ' << printer2.m_Height << "\n255\n";
 

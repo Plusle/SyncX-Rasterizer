@@ -13,12 +13,13 @@ namespace SyncX {
     public:
         Scene() {}
         friend class Loader;
-        friend class Renderer;
+        friend class Pipeline;
 
 #if 1
         std::vector<RawVertex>& GetVertices() { return m_Vertices; }
         std::vector<Triangle>& GetTriangles() { return m_Faces; }
         std::vector<Texture*>& GetTextures() { return m_Textures; }
+        std::vector<Model>& GetModels() { return m_Models; }
 #endif
 
     private:

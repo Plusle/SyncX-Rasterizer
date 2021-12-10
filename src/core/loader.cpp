@@ -116,6 +116,7 @@ namespace SyncX {
 
         std::cout << "Done.\n";
         std::cout << "Used " << timer.elapsed() << " ms to load " << filename << std::endl;
+        std::cout << "There are " << m_Scene->m_Models.size() << " models" << std::endl;
         std::cout << "This model has " << positions.size() << " vertrices, " << face_count << " faces.\n"
                   << "This Scene has " << verts.size() << " vertrices, " << faces.size() << " faces.\n";
         std::cout << "---------------------------------------------------------------------------------\n";

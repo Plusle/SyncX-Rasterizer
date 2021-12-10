@@ -3,9 +3,17 @@
 
 namespace SyncX {
 
+Pipeline::Pipeline(Scene* sc, std::vector<Vector4f>* framebuffer, std::vector<float>* zbuffer, uint32_t width, uint32_t height)
+	: m_Scene(sc),  m_Object(nullptr), m_Framebuffer(framebuffer), m_ZBuffer(zbuffer) {}
+
+
+void Pipeline::Initialize(Model* model) {
+	m_Object = model;
+}
+
 void Pipeline::VertexProcess(const Transform& t) {
-	auto& vert_from = m_Object.m_VertexFrom;
-	auto& vert_to   = m_Object.m_VertexTo;
+	auto& vert_from = m_Object->m_VertexFrom;
+	auto& vert_to   = m_Object->m_VertexTo;
 	auto vertices = m_Scene->GetVertices().cbegin();
 
 	auto MVPTrans = [&t](const RawVertex& v) -> Vertex {
@@ -18,8 +26,8 @@ void Pipeline::VertexProcess(const Transform& t) {
 	std::transform(vertices + vert_from, vertices + vert_to, std::back_inserter(m_VertexStream), MVPTrans);
 
 	auto faces = m_Scene->GetTriangles().cbegin();
-	auto& face_from = m_Object.m_FaceFrom;
-	auto& face_to = m_Object.m_FaceTo;
+	auto& face_from = m_Object->m_FaceFrom;
+	auto& face_to = m_Object->m_FaceTo;
 	auto remove_offset = [&vert_from](const Triangle& t) -> Triangle {
 		Triangle re = t;
 		re.v1 -= vert_from;

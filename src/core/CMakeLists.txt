@@ -29,4 +29,13 @@ add_library(IODevice
 
 target_link_libraries(IODevice
     Texture
+    Renderer
+)
+
+add_library(Renderer
+    renderer.cpp
+)
+
+target_link_libraries(Renderer
+    Pipeline
 )

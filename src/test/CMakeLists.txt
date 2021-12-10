@@ -6,13 +6,13 @@ add_executable(VectorTest
     VectorTest.cpp
 )
 
-add_executable(ImagePrinter
-    ImagePrinterTest.cpp
-)
+#add_executable(ImagePrinter
+#    ImagePrinterTest.cpp
+#)
 
-target_link_libraries(ImagePrinter 
-    IODevice
-)
+#target_link_libraries(ImagePrinter 
+#    IODevice
+#)
 
 add_executable(TexturePrototypeTest
     TexturePrototypeTest.cpp
@@ -41,4 +41,15 @@ add_executable(LoaderPrototypeTest
 
 target_link_libraries(LoaderPrototypeTest
     Loader
+)
+
+add_executable(RendererPipelineTest
+    RendererPipelineTest.cpp
+)
+
+target_link_libraries(RendererPipelineTest
+    Pipeline
+    Loader
+    Texture
+    IODevice
 )

@@ -7,13 +7,17 @@
 namespace SyncX {
 
 IODevice::IODevice(uint32_t width, uint32_t height) 
-        : m_Width(width), m_Height(height) {
-    Init();
+        : m_Width(width), m_Height(height), m_Renderer(nullptr) {}
+
+IODevice::~IODevice() {
+    if (m_Renderer != nullptr) delete m_Renderer;
 }
 
-void IODevice::Init() {
+void IODevice::Init(Scene* sc) {
     m_Framebuffer = std::vector<Vector4f>(m_Width * m_Height, Vector4f(0.f, 0.f, 0.f, 0.f));
     m_Zbuffer = std::vector<float>(m_Width * m_Height, std::numeric_limits<float>::max());
+    m_Scene = sc;
+    m_Renderer = new Renderer(sc, &m_Framebuffer, &m_Zbuffer, m_Width, m_Height);
 }
 
 void IODevice::ClearBuffer() {
@@ -27,6 +31,8 @@ uint32_t IODevice::GetIndex(int32_t i, int32_t j) const {
 
 ImagePrinter::ImagePrinter(const char* filename, uint32_t width, uint32_t height) 
                 : m_Filename(filename), IODevice(width, height) {}
+
+ImagePrinter::~ImagePrinter() {}
 
 void ImagePrinter::DebugImageInit() {
     for (uint32_t i = 0; i < m_Height; ++i) {
@@ -50,8 +56,13 @@ void ImagePrinter::Display() {
 
     // This is just for debugging
     // Rewrite this part after pipeline is done
-    DebugImageInit();
+    //DebugImageInit();
 
+    for (auto& model : m_Scene->GetModels()) {
+        m_Renderer->Render(&model);
+    }
+
+#if 0
     ppm << "P3\n" << m_Width << ' ' << m_Height << "\n255\n";
     
     for (int i = 0; i < m_Height; ++i) {    
@@ -64,12 +75,15 @@ void ImagePrinter::Display() {
         }
     }
     std::cerr << "\nDone.\n";
+#endif
 
     ppm.close();
 }
 
 Win32Platform::Win32Platform(const char* title, uint32_t width, uint32_t height) 
                 : m_Title(title), IODevice(width, height) {}
+
+Win32Platform::~Win32Platform() {}
 
 void Win32Platform::Display() {
 
