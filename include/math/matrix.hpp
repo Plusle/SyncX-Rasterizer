@@ -30,6 +30,8 @@ namespace SyncX {
                 MatrixMajor major = MatrixMajor::ROW);
 #endif
 
+        static Matrix3<T> Identity();
+
         Matrix3& operator=(const Matrix3& mat);
         bool operator==(const Matrix3& mat) const;
         Matrix3 operator+(const Matrix3& mat) const;
@@ -70,6 +72,8 @@ namespace SyncX {
 #else 
                 MatrixMajor major = MatrixMajor::ROW);
 #endif
+
+        static Matrix4<T> Identity();
 
         Matrix4& operator=(const Matrix4& mat);
         bool operator==(const Matrix4& mat) const;

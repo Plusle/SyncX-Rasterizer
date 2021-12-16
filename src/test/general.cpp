@@ -25,6 +25,12 @@ struct mat {
 };
 
 
+struct array {
+    array() : v({ nullptr, nullptr, nullptr }) {}
+
+    void* v[3];
+};
+
 
 int main(int argc, char** argv) {
 
@@ -64,21 +70,21 @@ int main(int argc, char** argv) {
     //}
     //std::cout << std::endl;
 
-    auto mat = SyncX::MakeTranslateMatrix(SyncX::Vector3f(1.0, 2.0, 3.0));
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j)
-            std::cout << mat[i][j] << ' ';
-        std::cout << std::endl;
-    }
+    //auto mat = SyncX::MakeTranslateMatrix(SyncX::Vector3f(1.0, 2.0, 3.0));
+    //for (int i = 0; i < 4; ++i) {
+    //    for (int j = 0; j < 4; ++j)
+    //        std::cout << mat[i][j] << ' ';
+    //    std::cout << std::endl;
+    //}
 
-    auto rot = SyncX::MakeRotateMatrix(SyncX::Vector3f(0.0, 1.0, 0.0), 3.1415926);
-    std::cout << rot;
+    //auto rot = SyncX::MakeRotateMatrix(SyncX::Vector3f(0.0, 1.0, 0.0), 3.1415926);
+    //std::cout << rot;
 
-    std::cout << mat * rot;
+    //std::cout << mat * rot;
 
-    auto model = SyncX::MakeModelMatrix(SyncX::Vector3f(0.0, 1.0, 0.0), 3.1415926, SyncX::Vector3f(1.0, 2.0, 3.0));
+    //auto model = SyncX::MakeModelMatrix(SyncX::Vector3f(0.0, 1.0, 0.0), 3.1415926, SyncX::Vector3f(1.0, 2.0, 3.0));
 
-    std::cout << model;
+    //std::cout << model;
 
     //SyncX::Vector3f v(1, 2, 3);
     //for (int i = 0; i < 3; ++i) {

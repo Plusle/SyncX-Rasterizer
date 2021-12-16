@@ -89,11 +89,13 @@ Win32Platform::~Win32Platform() {}
 void Win32Platform::Display() {
     Timer timer;
     timer.start();
+    Transform MVP;
+    MVP.SetViewMatrix(Vector3f(0, 0, 0), Vector3f(0, 0, -1), Vector3f(0, 1, 0));
+    MVP.SetPrespectiveMatrix(0.01, 100, 4.0 / 3, 45);
     while (true) {
         for (auto& model : m_Scene->GetModels()) {
-            Transform MVP;
             double time = timer.elapsed();
-            MVP.model = 
+            MVP.SetModelMatrix(Vector3f(), time / 2000, Vector3f(0, 0, 0));
             m_Renderer->Render(&model, MVP);
         }
     }

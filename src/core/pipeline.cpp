@@ -3,6 +3,20 @@
 
 namespace SyncX {
 
+namespace detail {
+
+bool FrontFace(const Vector3f& v0, const Vector3f& v1, const Vector3f& v2) {
+	Vector3f v10 = v1 - v0, v21 = v2 - v1;
+	auto discri = cross(v10, v21).z;
+	// convention: camera -> -z, vertex order is clockwise when looking from front
+	return discri < 0.0;
+}
+
+
+
+}	// namespace detail
+
+
 Pipeline::Pipeline(Scene* sc, std::vector<Vector4f>* framebuffer, std::vector<float>* zbuffer, uint32_t width, uint32_t height)
 	: m_Scene(sc),  m_Object(nullptr), m_Framebuffer(framebuffer), m_ZBuffer(zbuffer) {}
 
@@ -19,8 +33,12 @@ void Pipeline::VertexProcess(const Transform& t) {
 	auto MVPTrans = [&t](const RawVertex& v) -> Vertex {
 		Vertex re;
 		re.position = t * Vector4f(v.position.x, v.position.y, v.position.z, 1.0);
+		re.position.w = 1 / re.position.w;
+		re.position.x *= re.position.w;
+		re.position.y *= re.position.w;
+		re.position.z *= re.position.w;
 		//re.normal = t * Vector4f(v.normal.x, v.normal.y, v.normal.z, 0.0);
-		re.uv = v.uv;
+		//re.uv = v.uv;
 		return re;
 	};
 	std::transform(vertices + vert_from, vertices + vert_to, std::back_inserter(m_VertexStream), MVPTrans);
@@ -59,6 +77,18 @@ void Pipeline::Rasterization() {
 	for (const auto& face : m_FaceStream) {
 		// Constructing aabb for triangle
 		// AABB box(face, m_Device->m_height, m_Device->m_width);
+		auto& width = m_Width;
+		auto& height = m_Height;
+		const auto& v1 = m_VertexStream[face.v1].position;
+		const auto& v2 = m_VertexStream[face.v2].position;
+		const auto& v3 = m_VertexStream[face.v3].position;
+		auto vp1 = Vector3f(v1.x, v1.y, 1.0);
+		auto vp2 = Vector3f(v2.x, v2.y, 1.0);
+		auto vp3 = Vector3f(v3.x, v3.y, 1.0);
+		auto f1 = cross(vp2, vp1);
+		auto f2 = cross(vp3, vp2);
+		auto f3 = cross(vp1, vp3);
+
 
 		// Get all possible pixels: vector<fragment>
 		// frags = box.get_frags();
