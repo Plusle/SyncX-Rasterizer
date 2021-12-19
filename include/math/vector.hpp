@@ -34,6 +34,8 @@ namespace SyncX {
     };
 
     template <typename T>
+    inline T dot(const Vector2<T>& a, const Vector2<T>& b);
+    template <typename T>
     inline Vector2<T> operator*(T c, const Vector2<T>& v);
     template <typename T>
     inline std::ostream& operator<<(std::ostream& os, const Vector2<T>& v);
@@ -66,6 +68,8 @@ namespace SyncX {
         T x, y, z;
     };
 
+    template <typename T>
+    inline T dot(const Vector3<T>& a, const Vector3<T>& b);
     template <typename T>
     inline Vector3<T> cross(const Vector3<T>& a, const Vector3<T>& b);
     template <typename T>
@@ -102,6 +106,9 @@ namespace SyncX {
         T x, y, z, w;
     };
 
+
+    template <typename T>
+    inline T dot(const Vector4<T>& a, const Vector4<T>& b);
     template <typename T>
     inline Vector4<T> operator*(T c, const Vector4<T>& v);
     template <typename T>

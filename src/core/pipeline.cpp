@@ -1,21 +1,8 @@
 #include <core/pipeline.hpp>
+#include <math/aabb.hpp>
 #include <algorithm>
 
 namespace SyncX {
-
-namespace detail {
-
-bool FrontFace(const Vector3f& v0, const Vector3f& v1, const Vector3f& v2) {
-	Vector3f v10 = v1 - v0, v21 = v2 - v1;
-	auto discri = cross(v10, v21).z;
-	// convention: camera -> -z, vertex order is clockwise when looking from front
-	return discri < 0.0;
-}
-
-
-
-}	// namespace detail
-
 
 Pipeline::Pipeline(Scene* sc, std::vector<Vector4f>* framebuffer, std::vector<float>* zbuffer, uint32_t width, uint32_t height)
 	: m_Scene(sc),  m_Object(nullptr), m_Framebuffer(framebuffer), m_ZBuffer(zbuffer) {}
@@ -73,28 +60,19 @@ void Pipeline::ClippingCulling() {
 	// How to do clipping
 }
 
+void Pipeline::Viewport() {
+	auto width = m_Width - 1;
+	auto height = m_Height - 1;
+	for (auto& vertex : m_VertexStream) {
+		vertex.position.x *= width;
+		vertex.position.y *= height;
+	}
+}
+
 void Pipeline::Rasterization() {
 	for (const auto& face : m_FaceStream) {
-		// Constructing aabb for triangle
-		// AABB box(face, m_Device->m_height, m_Device->m_width);
-		auto& width = m_Width;
-		auto& height = m_Height;
-		const auto& v1 = m_VertexStream[face.v1].position;
-		const auto& v2 = m_VertexStream[face.v2].position;
-		const auto& v3 = m_VertexStream[face.v3].position;
-		auto vp1 = Vector3f(v1.x, v1.y, 1.0);
-		auto vp2 = Vector3f(v2.x, v2.y, 1.0);
-		auto vp3 = Vector3f(v3.x, v3.y, 1.0);
-		auto f1 = cross(vp2, vp1);
-		auto f2 = cross(vp3, vp2);
-		auto f3 = cross(vp1, vp3);
-
-
-		// Get all possible pixels: vector<fragment>
-		// frags = box.get_frags();
-
-		// copy to frags
-		// copy(frags.cbegin(), frags.cend(), back_inserter(m_Fragments));
+		AABB box(&m_VertexStream[face.v1], &m_VertexStream[face.v2], &m_VertexStream[face.v3], m_Width, m_Height);
+		box.Traverse(m_Fragments);
 	}
 }
 

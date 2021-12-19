@@ -20,6 +20,9 @@ public:
 	// step 2: clipping & face culling
 	void ClippingCulling();
 
+	// step 2.9: Viewport transformation
+	void Viewport();
+
 	// step 3: rasterization
 	void Rasterization();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <math/matrix.hpp>
+#include <math/vertex.hpp>
 #include <cmath>
 
 #define MY_PI 3.1415927
@@ -46,6 +47,13 @@ inline Matrix4<T> MakeTranslateMatrix(const Vector3<T>& translate) {
     for (int i = 0; i < 3; ++i)
         translation[i][3] = translate[i];
     return translation;
+}
+
+template <typename T>
+inline T BarycentricIntepolation(float alpha, float beta, float gamma, const T& t0, const T& t1, const T& t2, float w_reciprocal) {
+    return (alpha * w_reciprocal * t0 
+          + beta  * w_reciprocal * t1 
+          + gamma * w_reciprocal * t2) * w_reciprocal;
 }
 
 }   // namespace SyncX

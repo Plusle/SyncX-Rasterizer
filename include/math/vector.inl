@@ -110,6 +110,11 @@ Vector2<T> Vector2<T>::TempNormalized() {
 }
 
 template <typename T>
+inline T dot(const Vector2<T>& a, const Vector2<T>& b) {
+    return a.x * b.x + a.y * b.y;
+}
+
+template <typename T>
 inline Vector2<T> operator*(T c, const Vector2<T>& v) {
     return v * c;
 }
@@ -228,6 +233,11 @@ Vector3<T>& Vector3<T>::Normalized() {
 template <typename T>
 Vector3<T> Vector3<T>::TempNormalized() {
     return *this / this->Length();
+}
+
+template <typename T>
+inline T dot(const Vector3<T>& a, const Vector3<T>& b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
 template <typename T>
@@ -361,6 +371,11 @@ Vector4<T>& Vector4<T>::Normalized() {
 template <typename T>
 Vector4<T> Vector4<T>::TempNormalized() {
     return *this / this->Length();
+}
+
+template <typename T>
+inline T dot(const Vector2<T>& a, const Vector2<T>& b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
 template <typename T>
