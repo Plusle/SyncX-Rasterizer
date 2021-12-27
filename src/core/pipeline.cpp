@@ -82,7 +82,7 @@ void Pipeline::PreDepthTest() {
 }
 
 void Pipeline::FragmentShading() {
-
+	for ()
 }
 
 void Pipeline::Blending() {

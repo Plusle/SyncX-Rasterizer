@@ -24,11 +24,11 @@ private:
 	const Vertex* v[3];
 };
 
-void AABB::Traverse(std::vector<Fragment>& fragmens) {
+void AABB::Traverse(std::vector<Fragment>& fragments) {
 	// In this stage, all vertices have been transformed to screen coordinate.
 	// x [0, width), y [0, height), z [-1, 1]
 	// First, determining x_min, y_min, x_max, y_max
-	constexpr float kZ = 1.0f;
+	constexpr float kPlaceholder = 1.0f;
 	int32_t xmin = std::numeric_limits<int32_t>::max();
 	int32_t ymin = std::numeric_limits<int32_t>::max();
 	int32_t xmax = 0;
@@ -45,7 +45,7 @@ void AABB::Traverse(std::vector<Fragment>& fragmens) {
 	for (auto i = 0; i < 3; ++i) {
 		vp[i].x = v[i]->position.x;
 		vp[i].y = v[i]->position.y;
-		vp[i].z = kZ;
+		vp[i].z = kPlaceholder;
 	}
 	Vector3f f0 = cross(vp[1], vp[0]);
 	Vector3f f1 = cross(vp[2], vp[1]);
@@ -55,27 +55,30 @@ void AABB::Traverse(std::vector<Fragment>& fragmens) {
 	for (auto x = xmin; x <= xmax; ++x) {
 		for (auto y = ymin; y <= ymax; ++y) {
 			// determining if this pixel is inside the face.
-			Vector3f p(x + 0.5, y + 0.5, kZ);
+			Vector3f p(x + 0.5, y + 0.5, kPlaceholder);
 			if (dot(p, f0) * dot(f0, v[2]->position.toVec3()) > 0
 			 && dot(p, f1) * dot(f1, v[0]->position.toVec3()) > 0
 			 && dot(p, f2) * dot(f2, v[1]->position.toVec3()) > 0) {
 				// If inside, using barycentric coordinate to interpolate the value for this pixel
 				// 
 				// compute barycentric coordinate
-				// auto [alpha, beta, gamma] = ComputeBarycentricCoordinate(x, y, v);
-				// float w_reciprocal = 1.0 / (alpha * v0.w + beta * v1.w + gamma * v2.w); 
-				//                                   ^             ^              ^
+				auto [alpha, beta, gamma] = ComputeBarycentricCoordinate(p, vp);
+				float w_reciprocal = 1.0 / (alpha * v[0]->position.w + beta * v[1]->position.w + gamma * v[2]->position.w);
+				//                                                 ^                         ^                          ^
 				// recall that w has been setted to 1/w after mvp transform
 				// this follows the OpenGL convention.
 				
 				// Then intepolation
-				// Fragment frag;
-				// frag.position = (x, y, 0.0);
-				// frag.position.z = interpolation<float>(alpha, beta, gamma, z0, z1, z2, w_reciprocal);
-				// frag.normal = interpolation<Vector3f>(alpha, beta, gamma, n0, n1, n2, w_reciprocal);
-				// frag.uv = interpolation<Vector2f>(alpha, beta, gamma, uv0, uv1, uv2, w_reciprocal);
-				// 
-				// fragments.push_back(frag);
+				Fragment frag;
+				frag.position = { x + 0.5, y + 0.5, kPlaceholder, kPlaceholder };
+				frag.position.z = BarycentricIntepolation<float>(alpha, beta, gamma, 
+								    v[0]->position.z, v[1]->position.z, v[2]->position.z, w_reciprocal);
+				frag.normal = BarycentricIntepolation<Vector3f>(alpha, beta, gamma, 
+									v[0]->normal, v[1]->normal, v[2]->normal, w_reciprocal);
+				frag.uv = BarycentricIntepolation<Vector2f>(alpha, beta, gamma, 
+									v[0]->uv, v[1]->uv, v[2]->uv, w_reciprocal);
+				frag.window_pos = { x, y };
+				fragments.push_back(frag);
 			}
 		}
 	}

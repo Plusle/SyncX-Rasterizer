@@ -54,13 +54,13 @@ void ImagePrinter::Display() {
         std::exit(1);
     }
 
-
-    // This is just for debugging
-    // Rewrite this part after pipeline is done
-    //DebugImageInit();
+    Transform mvp;
+    mvp.SetModelMatrix(Vector3f(0, 1, 0), 0.0f, Vector3f(0, 0, 0));
+    mvp.SetViewMatrix(Vector3f(0, 0, -3), Vector3f(0, 0, -1), Vector3f(0, 1, 0));
+    mvp.SetPrespectiveMatrix(0.1f, 100.f, m_Width / m_Height, 45);
 
     for (auto& model : m_Scene->GetModels()) {
-        //m_Renderer->Render(&model);
+        m_Renderer->Render(&model, mvp);
     }
 
 #if 0

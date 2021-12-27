@@ -15,6 +15,8 @@ public:
 
 	void Render(Model* model, const Transform& MVP);
 
+	bool clipping;
+	bool prezbuffer;
 private:
 	Pipeline* m_Pipeline;
 };

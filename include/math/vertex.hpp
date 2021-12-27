@@ -14,7 +14,7 @@ namespace SyncX {
 
     struct Vertex {
         Vector4f position;
-        Vector4f normal;
+        Vector3f normal;
         Vector2f uv;
         // Vector4f tangent;
         // Vector4f bitangent;
@@ -22,13 +22,13 @@ namespace SyncX {
 
     struct Pixel {
         Vector4f position;
-        Vector4f normal;
+        Vector3f normal;
         Vector2f uv;
         Vector2i window_pos;
         // Vector4f tangent;
         // Vector4f bitangent;
     };
 
-    using Fragment = Vertex;
+    using Fragment = Pixel;
 
 }   // namespace SyncX

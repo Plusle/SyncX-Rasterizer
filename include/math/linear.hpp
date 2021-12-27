@@ -4,6 +4,8 @@
 #include <math/vertex.hpp>
 #include <cmath>
 
+#include <utility>
+
 #define MY_PI 3.1415927
 
 namespace SyncX {
@@ -47,6 +49,16 @@ inline Matrix4<T> MakeTranslateMatrix(const Vector3<T>& translate) {
     for (int i = 0; i < 3; ++i)
         translation[i][3] = translate[i];
     return translation;
+}
+
+inline std::tuple<float, float, float> 
+ComputeBarycentricCoordinate(const Vector3f& p, const Vector3f* v) {
+    auto x = p.x;
+    auto y = p.y;
+    float alpha = (x * (v[1].y - v[2].y) + (v[2].x - v[1].x) * y + v[1].x * v[2].y - v[2].x * v[1].y) / (v[0].x * (v[1].y - v[2].y) + (v[2].x - v[1].x) * v[0].y + v[1].x * v[2].y - v[2].x * v[1].y);
+    float beta  = (x * (v[2].y - v[0].y) + (v[0].x - v[2].x) * y + v[2].x * v[0].y - v[0].x * v[2].y) / (v[1].x * (v[2].y - v[0].y) + (v[0].x - v[2].x) * v[1].y + v[2].x * v[0].y - v[0].x * v[2].y);
+    float gamma = (x * (v[0].y - v[1].y) + (v[1].x - v[0].x) * y + v[0].x * v[1].y - v[1].x * v[0].y) / (v[2].x * (v[0].y - v[1].y) + (v[1].x - v[0].x) * v[2].y + v[0].x * v[1].y - v[1].x * v[0].y);
+    return std::make_tuple(alpha, beta, gamma);
 }
 
 template <typename T>
