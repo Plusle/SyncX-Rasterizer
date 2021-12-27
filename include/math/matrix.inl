@@ -25,7 +25,7 @@ Matrix3<T>::Matrix3(const Vector3<T>& v1, const Vector3<T>& v2, const Vector3<T>
 }
 
 template <typename T>
-static Matrix3<T> Matrix3<T>::Identity() {
+Matrix3<T> Matrix3<T>::Identity() {
     return Matrix3<T>(Vector3<T>(1, 0, 0), Vector3<T>(0, 1, 0), Vector3<T>(0, 0, 1));
 }
 
@@ -200,8 +200,8 @@ Matrix4<T>::Matrix4(const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>
 }
 
 template <typename T>
-static Matrix4<T> Matrix4<T>::Identity() {
-    return Matrix4<T>(Vector4<T>(1, 0, 0, 0), Vector4<T>(0, 1, 0, 0), Vector4<T>(0, 0, 1, 0), Vector4<T>(0, 0, 0, 1))
+Matrix4<T> Matrix4<T>::Identity() {
+    return Matrix4<T>(Vector4<T>(1, 0, 0, 0), Vector4<T>(0, 1, 0, 0), Vector4<T>(0, 0, 1, 0), Vector4<T>(0, 0, 0, 1));
 }
     
 template <typename T>

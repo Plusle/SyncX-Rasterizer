@@ -9,8 +9,22 @@
 #include <core/benchmark.hpp>
 
 namespace SyncX {
-    static void GetFaceVertrices(const char* line, Triangle& t) {
-        
+    namespace misc {
+        // Note:
+        // Several vertices can share same attributes. For example, four vertices of 
+        // rectangle should have same normal. For this consideration, indices of attributes 
+        // should be temporary stored in structure below whithin IO operation. After IO is over, 
+        // loader will traverse the vector of this structure to construct all vertices.
+        struct FaceIndices {
+            size_t v0, v1, v2, vt0, vt1, vt2, vn0, vn1, vn2;
+
+            // Attribute index starts from 1
+            void translate() {
+                --v0; --v1; --v2;
+                --vt0; --vt1; --vt2;
+                --vn0; --vn1; --vn2;
+            }
+        };
     }
 
     Loader::Loader(Scene* sc) : m_Scene(sc) {}
@@ -35,6 +49,7 @@ namespace SyncX {
         std::vector<Vector3f> positions;
         std::vector<Vector3f> normals;
         std::vector<Vector2f> tex_coords;
+        std::vector<misc::FaceIndices> indices;
         std::string line_buf;
         char trash;
 
@@ -48,11 +63,10 @@ namespace SyncX {
         Timer timer;
         timer.start();
 
-        uint32_t face_count = 0;
         while (!obj.eof()) {
             std::getline(obj, line_buf);
-            std::istringstream iss(line_buf.c_str());
             if (jump_to_next_line(line_buf)) continue;
+            std::istringstream iss(line_buf.c_str());
             
             if (!line_buf.compare(0, 2, "v ")) {
                 float f1, f2, f3;
@@ -67,36 +81,45 @@ namespace SyncX {
                 iss >> trash >> trash >> f1 >> f2;
                 tex_coords.emplace_back(f1, f2);
             } else if (!line_buf.compare(0, 2, "f ")) {
-                float v1, vt1, vn1,
-                      v2, vt2, vn2,
-                      v3, vt3, vn3;
-                iss >> trash >> v1 >> trash >> vt1 >> trash >> vn1
-                             >> v2 >> trash >> vt2 >> trash >> vn2
-                             >> v3 >> trash >> vt3 >> trash >> vn3;
-                Triangle tri;
-                tri.v1 = v1 + vert_offset;
-                tri.v2 = v2 + vert_offset;
-                tri.v3 = v3 + vert_offset;
-                //tri.t = ?
-                
-                faces.push_back(tri);
-                ++face_count;
-                //GetFaceVertrices(line_buf.c_str(), tri);
+                indices.push_back(misc::FaceIndices());
+                auto& fi = indices.back();
+                iss >> trash >> fi.v0 >> trash >> fi.vt0 >> trash >> fi.vn0
+                             >> fi.v1 >> trash >> fi.vt1 >> trash >> fi.vn1
+                             >> fi.v2 >> trash >> fi.vt2 >> trash >> fi.vn2;
+                // Attribute index starts from 1
+                fi.translate();
             }
-
-            //if (count++ > 5) break;
         }
 
-        assert(positions.size() == normals.size() && positions.size() == tex_coords.size());
-
-        for (auto i = 0; i < positions.size(); ++i) {
-            RawVertex v;
-            v.position = positions[i];
-            v.normal = normals[i];
-            v.uv = tex_coords[i];
-            verts.push_back(v);
+        verts.reserve(verts.size() + positions.size());
+        std::vector<bool> constructed(positions.size(), false);
+        for (auto i = 0; i != positions.size(); ++i) {
+            verts.emplace_back(RawVertex());
         }
-        assert(positions.size() == verts.size() - vert_offset);
+
+        faces.reserve(faces.size() + indices.size());
+        for (auto i = 0; i != indices.size(); ++i) {
+            const auto& fi = indices[i];
+            if (constructed[fi.v0] == false) {
+                verts[fi.v0 + vert_offset].position = positions[fi.v0];
+                verts[fi.v0 + vert_offset].normal = normals[fi.vn0];
+                verts[fi.v0 + vert_offset].uv = tex_coords[fi.vt0];
+                constructed[fi.v0] = true;
+            }
+            if (constructed[fi.v1] == false) {
+                verts[fi.v1 + vert_offset].position = positions[fi.v1];
+                verts[fi.v1 + vert_offset].normal = normals[fi.vn1];
+                verts[fi.v1 + vert_offset].uv = tex_coords[fi.vt1];
+                constructed[fi.v1] = true;
+            }
+            if (constructed[fi.v2] == false) {
+                verts[fi.v2 + vert_offset].position = positions[fi.v2];
+                verts[fi.v2 + vert_offset].normal = normals[fi.vn2];
+                verts[fi.v2 + vert_offset].uv = tex_coords[fi.vt2];
+                constructed[fi.v2] = true;
+            }      
+            faces.emplace_back(Triangle(fi.v0, fi.v1, fi.v2));
+        }
 
 #if 0
         for (const auto& v : m_Scene->m_Vertrices) {
@@ -116,9 +139,9 @@ namespace SyncX {
 
         std::cout << "Done.\n";
         std::cout << "Used " << timer.elapsed() << " ms to load " << filename << std::endl;
-        std::cout << "There are " << m_Scene->m_Models.size() << " models" << std::endl;
-        std::cout << "This model has " << positions.size() << " vertrices, " << face_count << " faces.\n"
-                  << "This Scene has " << verts.size() << " vertrices, " << faces.size() << " faces.\n";
+        std::cout << m_Scene->m_Models.size() << " models within the Scene" << std::endl;
+        std::cout << "Current model has " << positions.size() << " vertrices, " << model.m_FaceTo - model.m_FaceFrom << " faces.\n"
+                  << "Scene has " << verts.size() << " vertrices, " << faces.size() << " faces.\n";
         std::cout << "---------------------------------------------------------------------------------\n";
     }
 

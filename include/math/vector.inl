@@ -236,6 +236,11 @@ Vector3<T> Vector3<T>::TempNormalized() {
 }
 
 template <typename T>
+Vector2<T> Vector3<T>::toVec2() const {
+    return Vector2<T>(this->x, this->y);
+}
+
+template <typename T>
 inline T dot(const Vector3<T>& a, const Vector3<T>& b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
@@ -374,7 +379,17 @@ Vector4<T> Vector4<T>::TempNormalized() {
 }
 
 template <typename T>
-inline T dot(const Vector2<T>& a, const Vector2<T>& b) {
+Vector2<T> Vector4<T>::toVec2() const {
+    return Vector2<T>(this->x, this->y);
+}
+
+template <typename T>
+Vector3<T> Vector4<T>::toVec3() const {
+    return Vector3<T>(this->x, this->y, this->z);
+}
+
+template <typename T>
+inline T dot(const Vector4<T>& a, const Vector4<T>& b) {
     return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 

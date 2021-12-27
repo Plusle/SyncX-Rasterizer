@@ -65,6 +65,8 @@ namespace SyncX {
         Vector3& Normalized();
         Vector3 TempNormalized();
 
+        Vector2<T> toVec2() const;
+
         T x, y, z;
     };
 
@@ -102,6 +104,9 @@ namespace SyncX {
         float Length() const;
         Vector4& Normalized();
         Vector4 TempNormalized();
+
+        Vector2<T> toVec2() const;
+        Vector3<T> toVec3() const;
 
         T x, y, z, w;
     };

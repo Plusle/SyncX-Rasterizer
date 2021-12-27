@@ -27,7 +27,7 @@ void DebugImagePrinter::Display() {
 
     m_Width = t.m_Width;
     m_Height = t.m_Height;
-    Init();
+    Init(nullptr);
 
     for (int i = 0; i < m_Height; ++i) {
         for (int j = 0; j < m_Width; ++j) {

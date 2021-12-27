@@ -13,7 +13,9 @@ namespace SyncX {
 
 struct AABB {
 	AABB(const Vertex* v0, const Vertex* v1, const Vertex* v2, int32_t width, int32_t height) 
-		: m_Width(width), m_Height(height), v({ v0, v1, v2 }) {}
+		: m_Width(width), m_Height(height) {
+		v[0] = v0; v[1] = v1; v[2] = v2;
+	}
 
 	void Traverse(std::vector<Fragment>& fragments);
 
@@ -26,6 +28,7 @@ void AABB::Traverse(std::vector<Fragment>& fragmens) {
 	// In this stage, all vertices have been transformed to screen coordinate.
 	// x [0, width), y [0, height), z [-1, 1]
 	// First, determining x_min, y_min, x_max, y_max
+	constexpr float kZ = 1.0f;
 	int32_t xmin = std::numeric_limits<int32_t>::max();
 	int32_t ymin = std::numeric_limits<int32_t>::max();
 	int32_t xmax = 0;
@@ -42,7 +45,7 @@ void AABB::Traverse(std::vector<Fragment>& fragmens) {
 	for (auto i = 0; i < 3; ++i) {
 		vp[i].x = v[i]->position.x;
 		vp[i].y = v[i]->position.y;
-		vp[i].z = 1.0;
+		vp[i].z = kZ;
 	}
 	Vector3f f0 = cross(vp[1], vp[0]);
 	Vector3f f1 = cross(vp[2], vp[1]);
@@ -52,10 +55,10 @@ void AABB::Traverse(std::vector<Fragment>& fragmens) {
 	for (auto x = xmin; x <= xmax; ++x) {
 		for (auto y = ymin; y <= ymax; ++y) {
 			// determining if this pixel is inside the face.
-			Vector3f p(x, y, 1.0);
-			if (dot(p, f0) * dot(f0, v[2]->position) > 0
-			 && dot(p, f1) * dot(f1, v[0]->position) > 0
-			 && dot(p, f2) * dot(f2, v[1]->position) > 0) {
+			Vector3f p(x + 0.5, y + 0.5, kZ);
+			if (dot(p, f0) * dot(f0, v[2]->position.toVec3()) > 0
+			 && dot(p, f1) * dot(f1, v[0]->position.toVec3()) > 0
+			 && dot(p, f2) * dot(f2, v[1]->position.toVec3()) > 0) {
 				// If inside, using barycentric coordinate to interpolate the value for this pixel
 				// 
 				// compute barycentric coordinate

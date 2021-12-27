@@ -76,10 +76,6 @@ void Pipeline::Rasterization() {
 	}
 }
 
-// Find that this need to be implemented inside rasterization
-//void Pipeline::MXAASetting() {
-//
-//}
 
 void Pipeline::PreDepthTest() {
 

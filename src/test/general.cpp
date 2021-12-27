@@ -25,11 +25,11 @@ struct mat {
 };
 
 
-struct array {
-    array() : v({ nullptr, nullptr, nullptr }) {}
-
-    void* v[3];
-};
+//struct array {
+//    array() : v({ nullptr, nullptr, nullptr }) {}
+//
+//    void* v[3];
+//};
 
 
 int main(int argc, char** argv) {
@@ -90,6 +90,15 @@ int main(int argc, char** argv) {
     //for (int i = 0; i < 3; ++i) {
     //    std::cout << v[i] << ' ';
     //}
+
+    std::vector<int> i;
+    i.reserve(20);
+    std::cout << i.capacity() << ' ' << i.size() << std::endl;
+    i.emplace_back(2);
+    i.emplace_back(2);
+    i.emplace_back(2);
+    std::cout << i.capacity() << ' ' << i.size() << std::endl;
+
 
     return 0;
 }
