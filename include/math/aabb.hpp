@@ -5,6 +5,11 @@
 
 #include <vector>
 
+
+#if 1
+#include <iostream>
+#define DEBUG_INFO
+#endif
 // The actual works of rasterization are done in here with the help of some intepolation functions
 
 
@@ -15,6 +20,9 @@ struct AABB {
 	AABB(const Vertex* v0, const Vertex* v1, const Vertex* v2, int32_t width, int32_t height) 
 		: m_Width(width), m_Height(height) {
 		v[0] = v0; v[1] = v1; v[2] = v2;
+#ifdef DEBUG_INFO
+		std::cout << "New aabb" << std::endl;
+#endif
 	}
 
 	void Traverse(std::vector<Fragment>& fragments);
@@ -70,14 +78,14 @@ void AABB::Traverse(std::vector<Fragment>& fragments) {
 				
 				// Then intepolation
 				Fragment frag;
-				frag.position = { x + 0.5, y + 0.5, kPlaceholder, kPlaceholder };
+				frag.position = Vector4f(x + 0.5, y + 0.5, kPlaceholder, kPlaceholder);
 				frag.position.z = BarycentricIntepolation<float>(alpha, beta, gamma, 
 								    v[0]->position.z, v[1]->position.z, v[2]->position.z, w_reciprocal);
 				frag.normal = BarycentricIntepolation<Vector3f>(alpha, beta, gamma, 
 									v[0]->normal, v[1]->normal, v[2]->normal, w_reciprocal);
 				frag.uv = BarycentricIntepolation<Vector2f>(alpha, beta, gamma, 
 									v[0]->uv, v[1]->uv, v[2]->uv, w_reciprocal);
-				frag.window_pos = { x, y };
+				frag.window_pos = Vector2i(x, y);
 				fragments.push_back(frag);
 			}
 		}

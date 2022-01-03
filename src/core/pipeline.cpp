@@ -2,6 +2,11 @@
 #include <math/aabb.hpp>
 #include <algorithm>
 
+#if 1
+#define DEBUG_INFO
+#include <iostream>
+#endif
+
 namespace SyncX {
 
 Pipeline::Pipeline(Scene* sc, std::vector<Vector4f>* framebuffer, std::vector<float>* zbuffer, uint32_t width, uint32_t height)
@@ -13,22 +18,40 @@ void Pipeline::Initialize(Model* model) {
 }
 
 void Pipeline::VertexProcess(const Transform& t) {
+	std::cout << "Beginning Vertex Processing" << std::endl;
 	auto& vert_from = m_Object->m_VertexFrom;
 	auto& vert_to   = m_Object->m_VertexTo;
 	auto vertices = m_Scene->GetVertices().cbegin();
 
+#ifdef DEBUG_INFO
+	std::cout << m_Scene->GetVertices().size() << " vertices" << std::endl;
+
+	for (const auto& v : m_Scene->GetVertices()) {
+		std::cout << v.position << std::endl;
+	}
+#endif
+
+	//--------------------------------------------------------------------------------
+	// This part has some bugs, maybe in mvp
 	auto MVPTrans = [&t](const RawVertex& v) -> Vertex {
 		Vertex re;
 		re.position = t * Vector4f(v.position.x, v.position.y, v.position.z, 1.0);
 		re.position.w = 1 / re.position.w;
-		re.position.x *= re.position.w;
+		re.position.x *= re.position.w; 
 		re.position.y *= re.position.w;
 		re.position.z *= re.position.w;
 		//re.normal = t * Vector4f(v.normal.x, v.normal.y, v.normal.z, 0.0);
 		//re.uv = v.uv;
 		return re;
 	};
+	//--------------------------------------------------------------------------------
 	std::transform(vertices + vert_from, vertices + vert_to, std::back_inserter(m_VertexStream), MVPTrans);
+
+#ifdef DEBUG_INFO
+	for (const auto& v : m_VertexStream) {
+		std::cout << v.position << std::endl;
+	}
+#endif
 
 	auto faces = m_Scene->GetTriangles().cbegin();
 	auto& face_from = m_Object->m_FaceFrom;
@@ -40,11 +63,22 @@ void Pipeline::VertexProcess(const Transform& t) {
 		re.v3 -= vert_from;
 		return re;
 	};
+#ifdef DEBUG_INFO
+	std::cout << m_Scene->GetTriangles().size() << " faces" << std::endl;
+#endif
+
 	std::transform(faces + face_from, faces + face_to, std::back_inserter(m_FaceStream), remove_offset);
+
+#ifdef DEBUG_INFO
+	std::cout << "End Vertex Processing" << std::endl;
+#endif
 }
 
 void Pipeline::ClippingCulling() {
 	// Culling
+#ifdef DEBUG_INFO
+	std::cout << "Begin clipping" << std::endl;
+#endif
 	for (auto& face : m_FaceStream) {
 		const auto& v1 = m_VertexStream[face.v1];
 		const auto& v2 = m_VertexStream[face.v2];
@@ -66,6 +100,9 @@ void Pipeline::Viewport() {
 	for (auto& vertex : m_VertexStream) {
 		vertex.position.x *= width;
 		vertex.position.y *= height;
+#ifdef DEBUG_INFO
+		std::cout << vertex.position << std::endl;
+#endif
 	}
 }
 
@@ -76,13 +113,10 @@ void Pipeline::Rasterization() {
 	}
 }
 
-
-void Pipeline::PreDepthTest() {
-
-}
-
 void Pipeline::FragmentShading() {
-	for ()
+	for (const auto& frag : this->m_Fragments) {
+
+	}
 }
 
 void Pipeline::Blending() {

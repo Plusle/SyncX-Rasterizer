@@ -26,12 +26,6 @@ public:
 	// step 3: rasterization
 	void Rasterization();
 
-	//// step 3.1: MXAA
-	//void MXAASetting();
-
-	// step 3.9: Early depth test
-	void PreDepthTest();
-
 	// step 4: Fragment Shading
 	void FragmentShading();
 

@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
     ImagePrinter printer("pipeline_test.ppm", width, height);
     Scene sc;
     Loader loader(&sc);
-    loader.Execute("./obj/miku.obj");
+    loader.Execute("./obj/floor.obj");
     printer.Init(&sc);
     printer.Display();
     
