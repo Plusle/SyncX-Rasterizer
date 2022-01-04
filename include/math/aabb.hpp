@@ -47,6 +47,8 @@ void AABB::Traverse(std::vector<Fragment>& fragments) {
 		if (vertex->position.y < ymin) ymin = vertex->position.y;
 		if (vertex->position.y > ymax) ymax = vertex->position.y;
 	}
+	if (xmax >= m_Width) xmax = m_Width - 1;
+	if (ymax >= m_Height) ymax = m_Height - 1;
 
 	// This is a preparation for checking insideness
 	Vector3f vp[3];

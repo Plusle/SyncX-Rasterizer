@@ -2,26 +2,10 @@
 
 namespace SyncX {
 template <typename T>
-Matrix3<T>::Matrix3(const Vector3<T>& v1, const Vector3<T>& v2, const Vector3<T>& v3, MatrixMajor major) {
-    switch (major) {
-    case MatrixMajor::ROW: 
-        std::memcpy(&m_Elem[0], &v1[0], sizeof(Vector3<T>));
-        std::memcpy(&m_Elem[3], &v2[0], sizeof(Vector3<T>));
-        std::memcpy(&m_Elem[6], &v3[0], sizeof(Vector3<T>));
-        break;
-            
-    case MatrixMajor::COL:
-        for (auto i = 0; i < 9; ++i) {
-            if (i % 3 == 0) { m_Elem[i] = v1[i / 3]; continue; }
-            if (i % 3 == 1) { m_Elem[i] = v2[i / 3]; continue; }
-            if (i % 3 == 2) { m_Elem[i] = v3[i / 3]; continue; }
-        }
-        break;
-
-    default:
-        std::exit(1);
-        break;
-    }
+Matrix3<T>::Matrix3(const Vector3<T>& v1, const Vector3<T>& v2, const Vector3<T>& v3) {
+    std::memcpy(&m_Elem[0], &v1[0], sizeof(Vector3<T>));
+    std::memcpy(&m_Elem[3], &v2[0], sizeof(Vector3<T>));
+    std::memcpy(&m_Elem[6], &v3[0], sizeof(Vector3<T>));
 }
 
 template <typename T>
@@ -109,9 +93,14 @@ Matrix3<T>& Matrix3<T>::operator*=(T c) {
 }
 
 template <typename T>
-Vector3<T> Matrix3<T>::operator*(const Vector3<T>& v) const {
-    // Fix this
-    return Vector3<T>();
+Vector3<T> Matrix3<T>::operator*(const Vector3<T>& v) const {    
+    T a = 0, b = 0, c = 0;
+    for (auto i = 0; i < 3; ++i) {
+        a += (*this)[0][i] * v[i];
+        b += (*this)[1][i] * v[i];
+        c += (*this)[2][i] * v[i];
+    }
+    return Vector3<T>(a, b, c);
 }
     
 template <typename T>
@@ -165,38 +154,11 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix3<T>& mat) {
 }
 
 template <typename T>
-Matrix4<T>::Matrix4(const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>& v3, const Vector4<T>& v4, MatrixMajor major) {
-    switch (major) {
-        case MatrixMajor::ROW: 
-            std::memcpy(&m_Elem[0],  &(v1.x), sizeof(Vector4<T>));
-            std::memcpy(&m_Elem[4],  &(v2.x), sizeof(Vector4<T>));
-            std::memcpy(&m_Elem[8],  &(v3.x), sizeof(Vector4<T>));
-            std::memcpy(&m_Elem[12], &(v4.x), sizeof(Vector4<T>));
-            break;
-            
-        case MatrixMajor::COL:
-            for (auto i = 0; i < 16; ++i) {
-                switch (i % 4) {
-                    case 0:
-                        m_Elem[i] = v1[i / 4]; 
-                        continue;
-                    case 1:
-                        m_Elem[i] = v2[i / 4]; 
-                        continue;
-                    case 2:
-                        m_Elem[i] = v3[i / 4]; 
-                        continue;
-                    case 3:
-                        m_Elem[i] = v4[i / 4]; 
-                        continue;
-                }
-            }
-            break;
-
-        default:
-            std::exit(1);
-            break;
-    }
+Matrix4<T>::Matrix4(const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>& v3, const Vector4<T>& v4) {
+    std::memcpy(&m_Elem[0],  &(v1.x), sizeof(Vector4<T>));
+    std::memcpy(&m_Elem[4],  &(v2.x), sizeof(Vector4<T>));
+    std::memcpy(&m_Elem[8],  &(v3.x), sizeof(Vector4<T>));
+    std::memcpy(&m_Elem[12], &(v4.x), sizeof(Vector4<T>));
 }
 
 template <typename T>
@@ -285,8 +247,14 @@ Matrix4<T>& Matrix4<T>::operator*=(T c) {
 
 template <typename T>
 Vector4<T> Matrix4<T>::operator*(const Vector4<T>& v) const {
-    // Fix this
-    return Vector4<T>();
+    T a = 0, b = 0, c = 0, d = 0;
+    for (auto i = 0; i < 4; ++i) {
+        a += (*this)[0][i] * v[i];
+        b += (*this)[1][i] * v[i];
+        c += (*this)[2][i] * v[i];
+        d += (*this)[3][i] * v[i];
+    }
+    return Vector4<T>(a, b, c, d);
 }
     
 template <typename T>

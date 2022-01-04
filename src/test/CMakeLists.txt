@@ -6,6 +6,10 @@ add_executable(VectorTest
     VectorTest.cpp
 )
 
+add_executable(LinearTest
+    LinearTest.cpp
+)
+
 #add_executable(ImagePrinter
 #    ImagePrinterTest.cpp
 #)

@@ -10,7 +10,7 @@
 namespace SyncX {
 
 Pipeline::Pipeline(Scene* sc, std::vector<Vector4f>* framebuffer, std::vector<float>* zbuffer, uint32_t width, uint32_t height)
-	: m_Scene(sc),  m_Object(nullptr), m_Framebuffer(framebuffer), m_ZBuffer(zbuffer) {}
+	: m_Scene(sc),  m_Object(nullptr), m_Framebuffer(framebuffer), m_ZBuffer(zbuffer), m_Width(width), m_Height(height) {}
 
 
 void Pipeline::Initialize(Model* model) {
@@ -98,8 +98,8 @@ void Pipeline::Viewport() {
 	auto width = m_Width - 1;
 	auto height = m_Height - 1;
 	for (auto& vertex : m_VertexStream) {
-		vertex.position.x *= width;
-		vertex.position.y *= height;
+		vertex.position.x = (vertex.position.x + 1.0f) / 2 * width;
+		vertex.position.y = (vertex.position.y + 1.0f) / 2 * height;
 #ifdef DEBUG_INFO
 		std::cout << vertex.position << std::endl;
 #endif
@@ -114,9 +114,15 @@ void Pipeline::Rasterization() {
 }
 
 void Pipeline::FragmentShading() {
+	std::cout << "Fragments: " << m_Fragments.size() << std::endl;
+	size_t i = 0;
 	for (const auto& frag : this->m_Fragments) {
-
+		if (frag.window_pos.x >= m_Width || frag.window_pos.y >= m_Height) {
+			std::cout << frag.window_pos << std::endl;
+			++i;
+		}
 	}
+	std::cout << "Illegal pixel:" << i << std::endl;
 }
 
 void Pipeline::Blending() {

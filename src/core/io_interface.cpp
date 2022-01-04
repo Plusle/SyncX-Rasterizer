@@ -55,9 +55,13 @@ void ImagePrinter::Display() {
     }
 
     Transform mvp;
+    float aspect = (float)m_Width / (float)m_Height;
     mvp.SetModelMatrix(Vector3f(0, 1, 0), 0.0f, Vector3f(0, 0, 0));
     mvp.SetViewMatrix(Vector3f(0, 0, -3), Vector3f(0, 0, -1), Vector3f(0, 1, 0));
-    mvp.SetPrespectiveMatrix(0.1f, 100.f, m_Width / m_Height, 45);
+    mvp.SetPrespectiveMatrix(0.1f, 100.f, aspect, 45);
+
+    std::cout << "model:\n" << mvp.model << "view:\n" << mvp.view << "proj:\n" << mvp.projection << std::endl;
+    std::cout << "mvp:\n" << mvp.projection * mvp.view * mvp.model << std::endl;
 
     for (auto& model : m_Scene->GetModels()) {
         m_Renderer->Render(&model, mvp);

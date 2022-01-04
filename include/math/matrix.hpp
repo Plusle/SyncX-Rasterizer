@@ -7,8 +7,6 @@
 
 namespace SyncX {
 
-    enum class MatrixMajor { ROW, COL };
-
     template <typename T>
     struct Matrix2 {};
 
@@ -19,16 +17,7 @@ namespace SyncX {
 
         Matrix3() { std::memset(this, 0, m_Bytes); }
         Matrix3(const Matrix3& m) { std::memcpy(this, &m, m_Bytes); }
-        Matrix3(const Vector3<T>& v1, const Vector3<T>& v2, const Vector3<T>& v3,
-#if   defined(MATRIX_ROW_MAJOR) || defined(MATRIX_COL_MAJOR)
-    #ifdef MATRIX_ROW_MAJOR
-                MatrixMajor major = MatrixMajor::ROW);
-    #else
-                MatrixMajor major = MatrixMajor::COL);
-    #endif
-#else 
-                MatrixMajor major = MatrixMajor::ROW);
-#endif
+        Matrix3(const Vector3<T>& v1, const Vector3<T>& v2, const Vector3<T>& v3);
 
         static Matrix3<T> Identity();
 
@@ -64,14 +53,7 @@ namespace SyncX {
 
         Matrix4() { std::memset(this, 0, m_Bytes); }
         Matrix4(const Matrix4& m) { std::memcpy(this, &m, m_Bytes); }
-        Matrix4(const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>& v3, const Vector4<T>& v4, 
-#if   defined(MATRIX_ROW_MAJOR)
-                MatrixMajor major = MatrixMajor::ROW);
-#elif defined(MATRIX_COL_MAJOR)
-                MatrixMajor major = MatrixMajor::COL);
-#else 
-                MatrixMajor major = MatrixMajor::ROW);
-#endif
+        Matrix4(const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>& v3, const Vector4<T>& v4);
 
         static Matrix4<T> Identity();
 
