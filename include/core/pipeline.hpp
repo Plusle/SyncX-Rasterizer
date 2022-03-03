@@ -30,7 +30,7 @@ public:
 	void FragmentShading();
 
 	// step 5: Depth test & blending
-	void Blending();
+	void DepthTest();
 
 private:
 	Scene* m_Scene;
@@ -44,6 +44,7 @@ private:
 	std::vector<Triangle> m_FaceStream;
 	std::vector<Fragment> m_Fragments;
 
+	uint32_t GetIndex(uint32_t i, uint32_t j) { return m_Width * i + j; }
 };
 
 }   // namespace SyncX

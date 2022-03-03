@@ -6,7 +6,7 @@
 #include <vector>
 
 
-#if 1
+#if 0
 #include <iostream>
 #define DEBUG_INFO
 #endif
@@ -47,6 +47,8 @@ void AABB::Traverse(std::vector<Fragment>& fragments) {
 		if (vertex->position.y < ymin) ymin = vertex->position.y;
 		if (vertex->position.y > ymax) ymax = vertex->position.y;
 	}
+	if (xmin < 0) xmin = 0;
+	if (ymin < 0) ymin = 0;
 	if (xmax >= m_Width) xmax = m_Width - 1;
 	if (ymax >= m_Height) ymax = m_Height - 1;
 
@@ -78,7 +80,7 @@ void AABB::Traverse(std::vector<Fragment>& fragments) {
 				// recall that w has been setted to 1/w after mvp transform
 				// this follows the OpenGL convention.
 				
-				// Then intepolation
+				// Intepolation
 				Fragment frag;
 				frag.position = Vector4f(x + 0.5, y + 0.5, kPlaceholder, kPlaceholder);
 				frag.position.z = BarycentricIntepolation<float>(alpha, beta, gamma, 

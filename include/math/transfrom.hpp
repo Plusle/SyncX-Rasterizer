@@ -9,8 +9,8 @@ struct Transform {
     Transform() : model(Matrix4f::Identity()), view(Matrix4f::Identity()), projection(Matrix4f::Identity()) {}
 
 
-    void SetModelMatrix(const Vector3f& axis, float radians, const Vector3f& translate) {
-        model = MakeRotateMatrix(axis, radians) * MakeTranslateMatrix(translate);
+    void SetModelMatrix(const Vector3f& axis, float angle, const Vector3f& translate) {
+        model = MakeRotateMatrix(axis, angle / 180.f * MY_PI) * MakeTranslateMatrix(translate);
     }
 
     void SetViewMatrix(const Vector3f& pos, const Vector3f& dir, const Vector3f& up) {

@@ -32,7 +32,7 @@ int main() {
 
     Matrix3f m32(m3_row);
 
-    Matrix3f m3_col(Vector3f(1, 2, 3), Vector3f(1, 2, 3), Vector3f(1, 2, 3), MatrixMajor::COL);
+    Matrix3f m3_col(Vector3f(1, 2, 3), Vector3f(1, 2, 3), Vector3f(1, 2, 3));
     std::cout << "Show all: \n" << m31 << m32 << m3_row << m3_col << std::endl;
 
     std::cout << "Addition: " << std::endl;
@@ -73,8 +73,8 @@ int main() {
     std::cout << "\n\nMatrix4 Test" << std::endl;
 
     Matrix4f m0;
-    Matrix4f m4_row(Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4), MatrixMajor::ROW);
-    Matrix4f m4_col(Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4), MatrixMajor::COL);
+    Matrix4f m4_row(Vector4f(1, 1, 1, 1), Vector4f(2, 2, 2, 2), Vector4f(3, 3, 3, 3), Vector4f(4, 4, 4, 4));
+    Matrix4f m4_col(Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4), Vector4f(1, 2, 3, 4));
     Matrix4f m_copy(m4_row);
 
     std::cout << "Show All: \n" << m0 << m_copy << m4_row << m4_col << std::endl;

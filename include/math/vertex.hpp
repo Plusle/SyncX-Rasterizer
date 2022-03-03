@@ -27,6 +27,7 @@ namespace SyncX {
         Vector2i window_pos;
         // Vector4f tangent;
         // Vector4f bitangent;
+        Vector4f color;
     };
 
     using Fragment = Pixel;

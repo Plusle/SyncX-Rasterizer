@@ -2,7 +2,7 @@
 #include <math/aabb.hpp>
 #include <algorithm>
 
-#if 1
+#if 0
 #define DEBUG_INFO
 #include <iostream>
 #endif
@@ -21,7 +21,7 @@ void Pipeline::VertexProcess(const Transform& t) {
 	std::cout << "Beginning Vertex Processing" << std::endl;
 	auto& vert_from = m_Object->m_VertexFrom;
 	auto& vert_to   = m_Object->m_VertexTo;
-	auto vertices = m_Scene->GetVertices().cbegin();
+	auto  vertices  = m_Scene->GetVertices().cbegin();
 
 #ifdef DEBUG_INFO
 	std::cout << m_Scene->GetVertices().size() << " vertices" << std::endl;
@@ -116,17 +116,30 @@ void Pipeline::Rasterization() {
 void Pipeline::FragmentShading() {
 	std::cout << "Fragments: " << m_Fragments.size() << std::endl;
 	size_t i = 0;
-	for (const auto& frag : this->m_Fragments) {
-		if (frag.window_pos.x >= m_Width || frag.window_pos.y >= m_Height) {
+	for (auto& fragment : this->m_Fragments) {
+		if (fragment.window_pos.x >= m_Width  ||
+			fragment.window_pos.y >= m_Height ||
+			fragment.window_pos.x < 0 || fragment.window_pos.y < 0) {
+#if 0
 			std::cout << frag.window_pos << std::endl;
-			++i;
+#endif
+			++i; continue;
 		}
+		fragment.color = Vector4f(1.f, 1.f, 0.f, 1.f);
+
 	}
 	std::cout << "Illegal pixel:" << i << std::endl;
 }
 
-void Pipeline::Blending() {
-
+void Pipeline::DepthTest() {
+	for (const auto& fragment : m_Fragments) {
+		auto j = fragment.window_pos.x;
+		auto i = fragment.window_pos.y;
+		if ((*m_ZBuffer)[GetIndex(i, j)] > fragment.position.z) {
+			(*m_ZBuffer)[GetIndex(i, j)] = fragment.position.z;
+			(*m_Framebuffer)[GetIndex(i, j)] = fragment.color;
+		}
+	}
 }
 
 }   // namespace SyncX

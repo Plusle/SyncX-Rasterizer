@@ -20,9 +20,8 @@ void Renderer::Render(Model* model, const Transform& MVP) {
 	if (clipping) m_Pipeline->ClippingCulling();
 	m_Pipeline->Viewport();
 	m_Pipeline->Rasterization();
-	//if (prezbuffer) m_Pipeline->PreDepthTest();
 	m_Pipeline->FragmentShading();
-	m_Pipeline->Blending();
+	m_Pipeline->DepthTest();
 }
 
 }

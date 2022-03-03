@@ -56,8 +56,8 @@ void ImagePrinter::Display() {
 
     Transform mvp;
     float aspect = (float)m_Width / (float)m_Height;
-    mvp.SetModelMatrix(Vector3f(0, 1, 0), 0.0f, Vector3f(0, 0, 0));
-    mvp.SetViewMatrix(Vector3f(0, 0, -3), Vector3f(0, 0, -1), Vector3f(0, 1, 0));
+    mvp.SetModelMatrix(Vector3f(0, 1, 0), 25, Vector3f(0, 0, 0));
+    mvp.SetViewMatrix(Vector3f(0, 0, 50), Vector3f(0, 0, -1), Vector3f(0, 1, 0));
     mvp.SetPrespectiveMatrix(0.1f, 100.f, aspect, 45);
 
     std::cout << "model:\n" << mvp.model << "view:\n" << mvp.view << "proj:\n" << mvp.projection << std::endl;
@@ -67,7 +67,7 @@ void ImagePrinter::Display() {
         m_Renderer->Render(&model, mvp);
     }
 
-#if 0
+#if 1
     ppm << "P3\n" << m_Width << ' ' << m_Height << "\n255\n";
     
     for (int i = 0; i < m_Height; ++i) {    
