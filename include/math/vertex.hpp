@@ -13,15 +13,18 @@ namespace SyncX {
     };
 
     struct Vertex {
-        Vector4f position;
+        Vector4f pos_in_ndc;
+        Vector3f pos_in_world;
+        Vector2f pos_in_viewport;
         Vector3f normal;
         Vector2f uv;
         // Vector4f tangent;
         // Vector4f bitangent;
     };
 
-    struct Pixel {
-        Vector4f position;
+    struct Fragment {
+        Vector4f pos_in_ndc;
+        Vector3f pos_in_world;
         Vector3f normal;
         Vector2f uv;
         Vector2i window_pos;
@@ -30,6 +33,6 @@ namespace SyncX {
         Vector4f color;
     };
 
-    using Fragment = Pixel;
+    //using Fragment = Pixel;
 
 }   // namespace SyncX

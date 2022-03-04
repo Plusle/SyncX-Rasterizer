@@ -6,9 +6,7 @@
 #include <cstring>
 
 namespace SyncX {
-
-    template <typename T>
-    struct Matrix2 {};
+    template <typename T> struct Matrix4;
 
     template <typename T>
     struct Matrix3 {
@@ -47,6 +45,15 @@ namespace SyncX {
     inline std::ostream& operator<<(std::ostream& os, const Matrix3<T>& mat);
 
     template <typename T>
+    inline Matrix3<T> MakeMatrix3from4(const Matrix4<T>& m);
+
+    template <typename T>
+    inline Matrix3<T> MakeMinor(const Matrix4<T>& m, int i, int j);
+
+    template <typename T>
+    inline float Determinant(const Matrix3<T>& m);
+
+    template <typename T>
     struct Matrix4 {
         constexpr static int m_Size = 4 * 4;
         constexpr static int m_Bytes = sizeof(T) * m_Size;
@@ -81,6 +88,16 @@ namespace SyncX {
 
     template <typename T>
     inline std::ostream& operator<<(std::ostream& os, const Matrix4<T>& mat);
+
+    template <typename T>
+    inline float Determinant(const Matrix4<T>& m);
+
+    template <typename T>
+    inline Matrix4<T> MakeInverse(const Matrix4<T>& m);
+
+    template <typename T>
+    inline Matrix4<T> MakeTranspose(const Matrix4<T>& m);
+
 
     using Matrix3f = Matrix3<float>;
 

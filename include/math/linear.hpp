@@ -55,10 +55,21 @@ inline std::tuple<float, float, float>
 ComputeBarycentricCoordinate(const Vector3f& p, const Vector3f* v) {
     auto x = p.x;
     auto y = p.y;
-    float alpha = (x * (v[1].y - v[2].y) + (v[2].x - v[1].x) * y + v[1].x * v[2].y - v[2].x * v[1].y) / (v[0].x * (v[1].y - v[2].y) + (v[2].x - v[1].x) * v[0].y + v[1].x * v[2].y - v[2].x * v[1].y);
-    float beta  = (x * (v[2].y - v[0].y) + (v[0].x - v[2].x) * y + v[2].x * v[0].y - v[0].x * v[2].y) / (v[1].x * (v[2].y - v[0].y) + (v[0].x - v[2].x) * v[1].y + v[2].x * v[0].y - v[0].x * v[2].y);
-    float gamma = (x * (v[0].y - v[1].y) + (v[1].x - v[0].x) * y + v[0].x * v[1].y - v[1].x * v[0].y) / (v[2].x * (v[0].y - v[1].y) + (v[1].x - v[0].x) * v[2].y + v[0].x * v[1].y - v[1].x * v[0].y);
-    return std::make_tuple(alpha, beta, gamma);
+    //float alpha = (x * (v[1].y - v[2].y) + (v[2].x - v[1].x) * y + v[1].x * v[2].y - v[2].x * v[1].y) 
+    //            / (v[0].x * (v[1].y - v[2].y) + (v[2].x - v[1].x) * v[0].y + v[1].x * v[2].y - v[2].x * v[1].y);
+    //float beta  = (x * (v[2].y - v[0].y) + (v[0].x - v[2].x) * y + v[2].x * v[0].y - v[0].x * v[2].y) 
+    //            / (v[1].x * (v[2].y - v[0].y) + (v[0].x - v[2].x) * v[1].y + v[2].x * v[0].y - v[0].x * v[2].y);
+    //float gamma = (x * (v[0].y - v[1].y) + (v[1].x - v[0].x) * y + v[0].x * v[1].y - v[1].x * v[0].y) 
+    //            / (v[2].x * (v[0].y - v[1].y) + (v[1].x - v[0].x) * v[2].y + v[0].x * v[1].y - v[1].x * v[0].y);
+
+    float c1 = (x * (v[1].y - v[2].y) + (v[2].x - v[1].x) * y + v[1].x * v[2].y - v[2].x * v[1].y)
+        / (v[0].x * (v[1].y - v[2].y) + (v[2].x - v[1].x) * v[0].y + v[1].x * v[2].y - v[2].x * v[1].y);
+    float c2 = (x * (v[2].y - v[0].y) + (v[0].x - v[2].x) * y + v[2].x * v[0].y - v[0].x * v[2].y)
+        / (v[1].x * (v[2].y - v[0].y) + (v[0].x - v[2].x) * v[1].y + v[2].x * v[0].y - v[0].x * v[2].y);
+    float c3 = (x * (v[0].y - v[1].y) + (v[1].x - v[0].x) * y + v[0].x * v[1].y - v[1].x * v[0].y)
+        / (v[2].x * (v[0].y - v[1].y) + (v[1].x - v[0].x) * v[2].y + v[0].x * v[1].y - v[1].x * v[0].y);
+    return std::make_tuple(c1, c2, c3);
+    //return std::make_tuple(alpha, beta, gamma);
 }
 
 template <typename T>
@@ -67,5 +78,18 @@ inline T BarycentricIntepolation(float alpha, float beta, float gamma, const T& 
           + beta  * w_reciprocal * t1 
           + gamma * w_reciprocal * t2) * w_reciprocal;
 }
+
+template <typename T>
+inline T BarycentricIntepolation(float alpha, float beta, float gamma, float wr0, float wr1, float wr2, const T& t0, const T& t1, const T& t2) {
+    T numerator = alpha * wr0 * t0 + beta * wr1 * t1 + gamma * wr2 * t2;
+    float denominator = 1 / (alpha * wr0 + beta * wr1 + gamma * wr2);
+    return numerator * denominator;
+}
+
+template <typename T>
+inline T BarycentricIntepolation(float alpha, float beta, float gamma, const T& t0, const T& t1, const T& t2) {
+    return alpha * t0 + beta * t1 + gamma * t2;
+}
+
 
 }   // namespace SyncX

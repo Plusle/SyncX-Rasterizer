@@ -395,7 +395,7 @@ inline T dot(const Vector4<T>& a, const Vector4<T>& b) {
 
 template <typename T>
 inline Vector4<T> operator*(T c, const Vector4<T>& v) {
-    return c * v;
+    return v * c;
 }
 
 template <typename T>

@@ -20,7 +20,7 @@ void DebugImagePrinter::Display() {
         std::exit(1);
     }
 
-    Texture t("texture.png", false, false);
+    Texture t("./obj/Mary.png", false, false);
               
     ppm << "P3\n" << t.m_Width << ' ' 
                   << t.m_Height << "\n255\n";

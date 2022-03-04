@@ -17,11 +17,13 @@ void Renderer::Render(Model* model, const Transform& MVP) {
 	std::cout << "Begin to render" << std::endl;
 	m_Pipeline->Initialize(model);
 	m_Pipeline->VertexProcess(MVP);
-	if (clipping) m_Pipeline->ClippingCulling();
+	//if (clipping) 
+		m_Pipeline->ClippingCulling();
 	m_Pipeline->Viewport();
 	m_Pipeline->Rasterization();
 	m_Pipeline->FragmentShading();
 	m_Pipeline->DepthTest();
+	std::cout << "\n\n";
 }
 
 }

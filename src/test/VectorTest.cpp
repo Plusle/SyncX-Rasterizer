@@ -111,7 +111,14 @@ int main() {
     std::cout << "Comparision: " << std::endl;
     std::cout << (m4_col == m4_row) << " " << (m4_row == m4_row) << std::endl;
 
+    Matrix4f m4xx(Vector4f(1, 2, 3, 4), Vector4f(2, 4, 6, 7), Vector4f(3, 5, 6, 9), Vector4f(4, 6, 8, 9));
+    std::cout << m4xx << std::endl;
+    std::cout << MakeMatrix3from4(m4xx) << std::endl;
+    std::cout << MakeMinor(m4xx, 2, 1) << std::endl;
 
+    std::cout << Determinant(m4xx) << std::endl;
+    std::cout << Determinant(MakeMatrix3from4(m4xx)) << std::endl;
+    std::cout << MakeInverse(m4xx) << std::endl;
 
     return 0;
 }

@@ -29,6 +29,4 @@ namespace SyncX {
         std::vector<Model> m_Models;
     };
 
-    struct RTScene {};
-
 }   // namespace SyncX

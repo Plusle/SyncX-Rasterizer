@@ -154,6 +154,40 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix3<T>& mat) {
 }
 
 template <typename T>
+inline Matrix3<T> MakeMatrix3from4(const Matrix4<T>& m) {
+    Matrix3<T> res;
+    for (auto i = 0; i < 3; ++i) {
+        for (auto j = 0; j < 3; ++j) {
+            res[i][j] = m[i][j];
+        }
+    }
+    return res;
+}
+
+template <typename T>
+inline Matrix3<T> MakeMinor(const Matrix4<T>& m, int i, int j) {
+    int index = 0;
+    Matrix3<T> res;
+    for (auto x = 0; x < 4; ++x) {
+        if (x == i) continue;
+        for (auto y = 0; y < 4; ++y) {
+            if (y == j) continue;
+            res.m_Elem[index++] = m[x][y];
+        }
+    }
+    return res;
+}
+
+template <typename T>
+inline float Determinant(const Matrix3<T>& m) {
+    float det = 0;
+    det += m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]);
+    det -= m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]);
+    det += m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+    return det;    
+}
+
+template <typename T>
 Matrix4<T>::Matrix4(const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>& v3, const Vector4<T>& v4) {
     std::memcpy(&m_Elem[0],  &(v1.x), sizeof(Vector4<T>));
     std::memcpy(&m_Elem[4],  &(v2.x), sizeof(Vector4<T>));
@@ -305,6 +339,47 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix4<T>& mat) {
     }
     os << "\n";
     return os;
+}
+
+template <typename T>
+inline float Determinant(const Matrix4<T>& m) {
+    float det = 0;
+    det += m[0][0] * Determinant(MakeMinor(m, 0, 0));
+    det -= m[0][1] * Determinant(MakeMinor(m, 0, 1));
+    det += m[0][2] * Determinant(MakeMinor(m, 0, 2));
+    det -= m[0][3] * Determinant(MakeMinor(m, 0, 3));
+    return det;
+}
+
+template <typename T>
+inline Matrix4<T> MakeInverse(const Matrix4<T>& m) {
+    Matrix4<T> inverse;
+
+    float det = Determinant(m);
+    if (det == 0.0f) {
+        std::cerr << "Singluar matrix4 is detected:\n" << m << std::endl;
+        std::exit(1);
+    }
+    det = 1 / det;
+
+    auto sign = [](int i, int j) -> int { return (i + j) % 2 == 0 ? 1 : -1; };
+    for (auto i = 0; i < 4; ++i) {
+        for (auto j = 0; j < 4; ++j) {
+            inverse[i][j] = sign(i, j) * Determinant(MakeMinor(m, i, j));
+        }
+    }
+    return MakeTranspose(inverse * det);
+}
+
+template <typename T>
+inline Matrix4<T> MakeTranspose(const Matrix4<T>& m) {
+    Matrix4<T> transpose;
+    for (auto i = 0; i < 4; ++i) {
+        for (auto j = 0; j < 4; ++j) {
+            transpose[i][j] = m[j][i];
+        }
+    }
+    return transpose;
 }
 
 }   // namespace SyncX

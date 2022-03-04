@@ -34,7 +34,6 @@ public:
 
 private:
 	Scene* m_Scene;
-	//IODevice* m_Device;
 	const Model* m_Object;
 	std::vector<Vector4f>* m_Framebuffer;
 	std::vector<float>* m_ZBuffer;

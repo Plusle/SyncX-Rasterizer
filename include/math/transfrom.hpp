@@ -19,7 +19,7 @@ struct Transform {
             view[i][i] = 1;
         auto d = dir / dir.Length();
         auto u = up / up.Length();
-        auto r = cross(d, u);
+        auto r = cross(u, d);
         for (int i = 0; i < 3; ++i) {
             view[0][i] = r[i];
             view[1][i] = u[i];

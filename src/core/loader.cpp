@@ -118,7 +118,7 @@ namespace SyncX {
                 verts[fi.v2 + vert_offset].uv = tex_coords[fi.vt2];
                 constructed[fi.v2] = true;
             }      
-            faces.emplace_back(Triangle(fi.v0, fi.v1, fi.v2));
+            faces.emplace_back(Triangle(fi.v0 + vert_offset, fi.v1 + vert_offset, fi.v2 + vert_offset));
         }
 
 #if 0
@@ -142,6 +142,26 @@ namespace SyncX {
         std::cout << m_Scene->m_Models.size() << " models within the Scene" << std::endl;
         std::cout << "Current model has " << positions.size() << " vertrices, " << model.m_FaceTo - model.m_FaceFrom << " faces.\n"
                   << "Scene has " << verts.size() << " vertrices, " << faces.size() << " faces.\n";
+        std::cout << "Vertex from " << model.m_VertexFrom << " to " << model.m_VertexTo << "\n";
+        std::cout << "Vertex offset = " << vert_offset << "\n";
+        //for (auto i = face_offset; i < faces.size(); ++i) {
+        //    if (faces[i].v1 < vert_offset || faces[i].v2 < vert_offset || faces[i].v3 < vert_offset) {
+        //        std::cout << "Illegal exist" << std::endl;
+        //    }
+        //}
+
+        float xmin = std::numeric_limits<float>::max(), ymin = std::numeric_limits<float>::max();
+        float xmax = 0, ymax = 0;
+        for (const auto& uv : tex_coords) {
+            if (uv.x < xmin) xmin = uv.x;
+            if (uv.x > xmax) xmax = uv.x;
+            if (uv.y < ymin) ymin = uv.y;
+            if (uv.y > ymax) ymax = uv.y;
+        }
+
+        std::cout << "UV Range: (" << xmin << ", " << ymin << ")     (" << xmax << ", " << ymax << ")" << std::endl;
+
+
         std::cout << "---------------------------------------------------------------------------------\n";
     }
 

@@ -99,9 +99,9 @@ namespace SyncX {
         return std::make_tuple(vertical, horizontal);
     }
 
-    Vector4f Texture::GetTexel(int32_t i, int32_t j, int32_t width, int32_t height, int32_t level) const {
+    Vector4f Texture::GetTexel(int32_t i, int32_t j, int32_t level) const {
         uint8_t* texel = m_Data + m_MipmapOffset[level];
-        texel += i * width * m_Channels + j * m_Channels;
+        texel += i * m_Width * m_Channels + j * m_Channels;
         float r = static_cast<float>(texel[0]);
         float g = static_cast<float>(texel[1]);
         float b = static_cast<float>(texel[2]);
@@ -132,10 +132,10 @@ namespace SyncX {
         int32_t i1 = clamp<int32_t>(i0 + vertical, 0, width - 1);
         int32_t j1 = clamp<int32_t>(j0 + horizontal, 0, height - 1);
 
-        Vector4f color_tl = GetTexel(i0, j0, width, height, level);
-        Vector4f color_tr = GetTexel(i0, j1, width, height, level);
-        Vector4f color_bl = GetTexel(i1, j0, width, height, level);
-        Vector4f color_br = GetTexel(i1, j1, width, height, level);
+        Vector4f color_tl = GetTexel(i0, j0, level);
+        Vector4f color_tr = GetTexel(i0, j1, level);
+        Vector4f color_bl = GetTexel(i1, j0, level);
+        Vector4f color_br = GetTexel(i1, j1, level);
         
         if (vertical == -1) {
             std::swap(color_tl, color_bl);
